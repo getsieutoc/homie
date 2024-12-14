@@ -1,0 +1,26 @@
+name: nextjs-starter
+
+services:
+  postgres:
+    container_name: nextjs-starter-postgres
+    image: postgres:16
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+  mailpit: # For sending email in development
+    container_name: nextjs-starter-mailpit
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - 1025:1025
+      - 8025:8025
+
+volumes:
+  postgres-data:
