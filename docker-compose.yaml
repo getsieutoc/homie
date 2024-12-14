@@ -1,8 +1,8 @@
-name: nextjs-starter
+name: homie
 
 services:
   postgres:
-    container_name: nextjs-starter-postgres
+    container_name: homie-postgres
     image: postgres:16
     restart: unless-stopped
     ports:
@@ -15,7 +15,7 @@ services:
       POSTGRES_PASSWORD: password
 
   mailpit: # For sending email in development
-    container_name: nextjs-starter-mailpit
+    container_name: homie-mailpit
     image: axllent/mailpit:latest
     restart: unless-stopped
     ports:

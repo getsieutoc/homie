@@ -1,13 +1,20 @@
 import { NextAuthConfig } from 'next-auth';
+import { PrismaAdapter } from '@auth/prisma-adapter';
 import CredentialProvider from 'next-auth/providers/credentials';
-import GithubProvider from 'next-auth/providers/github';
+// import GithubProvider from 'next-auth/providers/github';
+
+import { prisma } from '@/lib/prisma';
 
 const authConfig = {
+  secret: process.env.AUTH_SECRET!,
+
+  adapter: PrismaAdapter(prisma),
+
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? ''
-    }),
+    // GithubProvider({
+    //   clientId: process.env.GITHUB_ID ?? '',
+    //   clientSecret: process.env.GITHUB_SECRET ?? ''
+    // }),
     CredentialProvider({
       credentials: {
         email: {
@@ -35,8 +42,11 @@ const authConfig = {
       }
     })
   ],
+
   pages: {
-    signIn: '/' //sigin page
+    signIn: '/login',
+    verifyRequest: '/login',
+    error: '/login' // Error code passed in query string as ?error=
   }
 } satisfies NextAuthConfig;
 
