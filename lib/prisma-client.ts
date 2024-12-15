@@ -1,5 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
+declare global {
+  // We need var in declare global
+  // eslint-disable-next-line no-var, vars-on-top
+  var prisma: ExtendedPrismaClient | undefined;
+}
+
 const prismaClientSingleton = () => {
   return new PrismaClient({
     omit: {
@@ -15,12 +21,10 @@ const prismaClientSingleton = () => {
 
 export type ExtendedPrismaClient = ReturnType<typeof prismaClientSingleton>;
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: ExtendedPrismaClient | undefined;
-};
+const prisma = global.prisma ?? prismaClientSingleton();
 
-const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') {
+  global.prisma = prisma;
+}
 
 export { prisma };
