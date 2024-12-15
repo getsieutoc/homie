@@ -56,10 +56,11 @@ export default function SignInViewPage() {
               Create an account
             </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your email below to create your account
+              Enter your email and password below
             </p>
           </div>
           <UserAuthForm />
+
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{' '}
             <Link

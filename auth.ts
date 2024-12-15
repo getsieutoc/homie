@@ -1,10 +1,10 @@
-import NextAuth from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
-import bcrypt from 'bcrypt';
-// import { verify } from '@node-rs/argon2';
+import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { prisma } from '@/lib/prisma-client';
+import authConfig from '@/auth.config';
+import NextAuth from 'next-auth';
+import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import authConfig from './auth.config';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const parsedCredentials = z
           .object({
             email: z.string().email(),
-            password: z.string().min(6)
+            password: z.string().min(MIN_PASSWORD_LENGTH)
           })
           .safeParse(credentials);
 
@@ -30,8 +30,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = parsedCredentials.data;
 
           const user = await prisma.user.findUnique({
-            where: { email },
-            omit: { hashedPassword: false }
+            omit: { hashedPassword: false },
+            where: { email }
           });
 
           if (!user) return null;

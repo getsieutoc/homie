@@ -1,12 +1,13 @@
-import { NextAuthConfig } from 'next-auth';
+import { prisma, PrismaClient } from '@/lib/prisma-client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from '@/lib/prisma-client';
+import { NextAuthConfig } from 'next-auth';
 
 const authConfig = {
   secret: process.env.AUTH_SECRET!,
 
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma as PrismaClient),
 
+  // We do this to avoid bringing bcrypt into the middleware
   providers: [],
 
   pages: {

@@ -8,38 +8,44 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useTransition } from 'react';
+import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
+import { signIn } from 'next-auth/react';
+import { useTransition } from 'react';
 import { toast } from 'sonner';
 import * as z from 'zod';
+
 import GithubSignInButton from './github-auth-button';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' })
+  email: z.string().email({ message: 'Enter a valid email address' }),
+  password: z.string().min(MIN_PASSWORD_LENGTH, {
+    message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+  })
 });
 
-type UserFormValue = z.infer<typeof formSchema>;
+type Inputs = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, startTransition] = useTransition();
   const defaultValues = {
-    email: 'demo@gmail.com'
+    email: '',
+    password: ''
   };
-  const form = useForm<UserFormValue>({
+  const form = useForm<Inputs>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
 
-  const onSubmit = async (data: UserFormValue) => {
+  const onSubmit = async (inputs: Inputs) => {
     startTransition(() => {
       signIn('credentials', {
-        email: data.email,
+        email: inputs.email,
         callbackUrl: callbackUrl ?? '/dashboard'
       });
       toast.success('Signed In Successfully!');
@@ -66,6 +72,20 @@ export default function UserAuthForm() {
                     disabled={loading}
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" disabled={loading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

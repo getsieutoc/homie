@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 declare global {
   // We need var in declare global
@@ -6,17 +6,17 @@ declare global {
   var prisma: ExtendedPrismaClient | undefined;
 }
 
+const omitConfig = {
+  user: {
+    hashedPassword: true
+  },
+  apiKey: {
+    hashedSecretKey: true
+  }
+} satisfies Prisma.GlobalOmitConfig;
+
 const prismaClientSingleton = () => {
-  return new PrismaClient({
-    omit: {
-      user: {
-        hashedPassword: true
-      },
-      apiKey: {
-        hashedSecretKey: true
-      }
-    }
-  });
+  return new PrismaClient({ omit: omitConfig });
 };
 
 export type ExtendedPrismaClient = ReturnType<typeof prismaClientSingleton>;
@@ -27,4 +27,4 @@ if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma;
 }
 
-export { prisma };
+export { prisma, PrismaClient };
