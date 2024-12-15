@@ -11,9 +11,9 @@ const authConfig = {
   providers: [],
 
   pages: {
-    signIn: '/login',
-    verifyRequest: '/login',
-    error: '/login' // Error code passed in query string as ?error=
+    signIn: '/auth',
+    verifyRequest: '/auth',
+    error: '/auth' // Error code passed in query string as ?error=
   },
 
   callbacks: {

@@ -1,3 +1,5 @@
+'use server';
+
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { prisma } from '@/lib/prisma-client';
 import bcrypt from 'bcrypt';

@@ -19,12 +19,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       },
       async authorize(credentials) {
+        console.log('-------- 1');
+
         const parsedCredentials = z
           .object({
             email: z.string().email(),
             password: z.string().min(MIN_PASSWORD_LENGTH)
           })
           .safeParse(credentials);
+        console.log('-------- 2', { parsedCredentials, credentials });
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
@@ -33,6 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             omit: { hashedPassword: false },
             where: { email }
           });
+          console.log('found user', user);
 
           if (!user) return null;
 
@@ -44,6 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             id: user.id
           };
         }
+        console.log('-------- 3');
 
         return null;
       }
