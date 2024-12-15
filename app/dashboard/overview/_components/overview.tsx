@@ -1,3 +1,5 @@
+'use client';
+
 import { AreaGraph } from './area-graph';
 import { BarGraph } from './bar-graph';
 import { PieGraph } from './pie-graph';
@@ -13,8 +15,13 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function OverViewPage() {
+  const { user } = useAuth();
+
+  console.log({ user });
+
   return (
     <PageContainer scrollable>
       <div className="space-y-2">

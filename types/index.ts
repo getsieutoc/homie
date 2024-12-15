@@ -1,6 +1,8 @@
 import { Icons } from '@/components/icons';
 import { ReactNode } from 'react';
 
+export * from '@prisma/client';
+
 export type LayoutProps = {
   children: ReactNode;
 };

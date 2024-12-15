@@ -53,7 +53,8 @@ export const LoginForm = () => {
       signIn('credentials', {
         email: inputs.email,
         password: inputs.password,
-        callbackUrl: callbackUrl ?? '/dashboard'
+        callbackUrl: '/dashboard'
+        // callbackUrl: callbackUrl ?? '/dashboard'
       });
       toast.success('Logged In Successfully!');
     });

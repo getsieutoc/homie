@@ -1,6 +1,7 @@
 import CredentialProvider from 'next-auth/providers/credentials';
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
-import { prisma } from '@/lib/prisma-client';
+import { prisma, PrismaClient } from '@/lib/prisma-client';
+import { PrismaAdapter } from '@auth/prisma-adapter';
 import authConfig from '@/auth.config';
 import NextAuth from 'next-auth';
 import bcrypt from 'bcrypt';
@@ -8,6 +9,11 @@ import { z } from 'zod';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+
+  adapter: PrismaAdapter(prisma as PrismaClient),
+
+  session: { strategy: 'jwt' },
+
   providers: [
     CredentialProvider({
       credentials: {
@@ -18,16 +24,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           type: 'password'
         }
       },
-      async authorize(credentials) {
-        console.log('-------- 1');
 
+      async authorize(credentials) {
         const parsedCredentials = z
           .object({
             email: z.string().email(),
             password: z.string().min(MIN_PASSWORD_LENGTH)
           })
           .safeParse(credentials);
-        console.log('-------- 2', { parsedCredentials, credentials });
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
@@ -36,7 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             omit: { hashedPassword: false },
             where: { email }
           });
-          console.log('found user', user);
 
           if (!user) return null;
 
@@ -48,7 +51,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             id: user.id
           };
         }
-        console.log('-------- 3');
 
         return null;
       }

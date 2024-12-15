@@ -52,8 +52,16 @@ export const company = {
 };
 
 export default function AppSidebar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
+
+  if (status === 'loading') {
+    return null; // or a loading spinner
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <Sidebar collapsible="icon">

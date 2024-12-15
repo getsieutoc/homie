@@ -29,7 +29,6 @@ model User {
   emailVerified  DateTime?
   accounts       Account[]
   sessions       Session[]
-  salt           String
   hashedPassword String
   image          String?
   memberships    Membership[]
