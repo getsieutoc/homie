@@ -115,6 +115,9 @@ importers:
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
+      deepmerge:
+        specifier: 4.3.1
+        version: 4.3.1
       kbar:
         specifier: 0.1.0-beta.45
         version: 0.1.0-beta.45(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -2917,6 +2920,13 @@ packages:
       {
         integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
       }
+
+  deepmerge@4.3.1:
+    resolution:
+      {
+        integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
+      }
+    engines: { node: '>=0.10.0' }
 
   define-data-property@1.1.4:
     resolution:
@@ -7938,6 +7948,8 @@ snapshots:
   deep-extend@0.6.0: {}
 
   deep-is@0.1.4: {}
+
+  deepmerge@4.3.1: {}
 
   define-data-property@1.1.4:
     dependencies:

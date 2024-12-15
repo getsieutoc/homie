@@ -1,5 +1,5 @@
 'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,6 +29,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail
 } from '@/components/ui/sidebar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { navItems } from '@/constants/data';
 import {
   BadgeCheck,
@@ -39,10 +40,10 @@ import {
   GalleryVerticalEnd,
   LogOut
 } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import * as React from 'react';
+import { useAuth } from '@/hooks/use-auth';
+import Link from 'next/link';
+
 import { Icons } from '../icons';
 
 export const company = {
@@ -51,11 +52,11 @@ export const company = {
   plan: 'Enterprise'
 };
 
-export default function AppSidebar() {
-  const { data: session, status } = useSession();
+export const AppSidebar = () => {
+  const { session, status: isLoading, user } = useAuth();
   const pathname = usePathname();
 
-  if (status === 'loading') {
+  if (isLoading) {
     return null; // or a loading spinner
   }
 
@@ -147,19 +148,19 @@ export default function AppSidebar() {
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
-                      src={session?.user?.image || ''}
-                      alt={session?.user?.name || ''}
+                      src={user?.image || ''}
+                      alt={user?.name || ''}
                     />
                     <AvatarFallback className="rounded-lg">
-                      {session?.user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
+                      {user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {session?.user?.name || ''}
+                      {user?.name || ''}
                     </span>
                     <span className="truncate text-xs">
-                      {session?.user?.email || ''}
+                      {user?.email || ''}
                     </span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4" />
@@ -175,21 +176,20 @@ export default function AppSidebar() {
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage
-                        src={session?.user?.image || ''}
-                        alt={session?.user?.name || ''}
+                        src={user?.image || ''}
+                        alt={user?.name || ''}
                       />
                       <AvatarFallback className="rounded-lg">
-                        {session?.user?.name?.slice(0, 2)?.toUpperCase() ||
-                          'CN'}
+                        {user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {session?.user?.name || ''}
+                        {user?.name || ''}
                       </span>
                       <span className="truncate text-xs">
                         {' '}
-                        {session?.user?.email || ''}
+                        {user?.email || ''}
                       </span>
                     </div>
                   </div>
@@ -223,4 +223,4 @@ export default function AppSidebar() {
       <SidebarRail />
     </Sidebar>
   );
-}
+};

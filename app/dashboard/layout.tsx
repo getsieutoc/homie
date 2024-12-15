@@ -1,10 +1,10 @@
-import KBar from '@/components/kbar';
-import AppSidebar from '@/components/layout/app-sidebar';
-import Header from '@/components/layout/header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/layout/app-sidebar';
+import { Header } from '@/components/layout/header';
 import { type LayoutProps } from '@/types';
-import { type Metadata } from 'next';
+import { KBar } from '@/components/kbar';
 import { cookies } from 'next/headers';
+import { type Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Next Shadcn Dashboard Starter',
@@ -12,13 +12,15 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardLayout({ children }: LayoutProps) {
-  // Persisting the sidebar state in the cookie.
   const cookieStore = cookies();
+
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
+
   return (
     <KBar>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
+
         <SidebarInset>
           <Header />
           {/* page main content */}

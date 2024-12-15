@@ -40,3 +40,15 @@ export interface FooterItem {
 export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;
+
+export enum HttpMethod {
+  CONNECT = 'CONNECT',
+  DELETE = 'DELETE',
+  GET = 'GET',
+  HEAD = 'HEAD',
+  OPTIONS = 'OPTIONS',
+  PATCH = 'PATCH',
+  POST = 'POST',
+  PUT = 'PUT',
+  TRACE = 'TRACE'
+}

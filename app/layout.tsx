@@ -1,5 +1,5 @@
 import { auth } from '@/auth';
-import Providers from '@/components/layout/providers';
+import { GeneralProviders } from '@/components/layout/providers';
 import { Toaster } from '@/components/ui/sonner';
 import type { Metadata } from 'next';
 import { Lato } from 'next/font/google';
@@ -32,10 +32,10 @@ export default async function RootLayout({
     >
       <body className={'overflow-hidden'}>
         <NextTopLoader showSpinner={false} />
-        <Providers session={session}>
+        <GeneralProviders session={session}>
           <Toaster />
           {children}
-        </Providers>
+        </GeneralProviders>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 'use client';
-import { navItems } from '@/constants/data';
+
 import {
   KBarAnimator,
   KBarPortal,
@@ -7,12 +7,14 @@ import {
   KBarProvider,
   KBarSearch
 } from 'kbar';
+import { navItems } from '@/constants/data';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
+
 import RenderResults from './render-result';
 import useThemeSwitching from './use-theme-switching';
 
-export default function KBar({ children }: { children: React.ReactNode }) {
+export const KBar = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   const navigateTo = (url: string) => {
@@ -52,6 +54,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
         // Return only valid actions (ignoring null base actions for containers)
         return baseAction ? [baseAction, ...childActions] : childActions;
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -60,7 +63,8 @@ export default function KBar({ children }: { children: React.ReactNode }) {
       <KBarComponent>{children}</KBarComponent>
     </KBarProvider>
   );
-}
+};
+
 const KBarComponent = ({ children }: { children: React.ReactNode }) => {
   useThemeSwitching();
 

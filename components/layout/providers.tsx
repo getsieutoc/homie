@@ -1,19 +1,23 @@
 'use client';
-import React from 'react';
-import ThemeProvider from './ThemeToggle/theme-provider';
+
 import { SessionProvider, SessionProviderProps } from 'next-auth/react';
-export default function Providers({
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { configs } from '@/lib/swr-configs';
+import { SWRConfig } from 'swr';
+import { ReactNode } from 'react';
+
+export const GeneralProviders = ({
   session,
   children
 }: {
   session: SessionProviderProps['session'];
-  children: React.ReactNode;
-}) {
+  children: ReactNode;
+}) => {
   return (
-    <>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <SWRConfig value={configs}>
+      <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
         <SessionProvider session={session}>{children}</SessionProvider>
-      </ThemeProvider>
-    </>
+      </NextThemesProvider>
+    </SWRConfig>
   );
-}
+};
