@@ -1,6 +1,7 @@
 import { Icons } from '@/components/icons';
 import { ReactNode } from 'react';
 
+// why it does not effect?
 export * from '@prisma/client';
 
 export type LayoutProps = {

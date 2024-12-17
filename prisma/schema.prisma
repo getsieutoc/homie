@@ -8,9 +8,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum SystemRole {
+  ADMIN
+  CUSTOMER
+}
+
 enum MembershipRole {
   OWNER
-  ADMIN
+  MANAGER
   MEMBER
 }
 
@@ -31,6 +36,7 @@ model User {
   sessions       Session[]
   hashedPassword String
   image          String?
+  role           SystemRole   @default(CUSTOMER)
   memberships    Membership[]
 }
 

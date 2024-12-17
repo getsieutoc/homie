@@ -57,3 +57,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     })
   ]
 });
+
+export const getAuth = async () => {
+  const session = await auth();
+
+  const user = session
+    ? await prisma.user.findUnique({
+        where: { id: session.user.id }
+      })
+    : null;
+
+  return { session, user };
+};

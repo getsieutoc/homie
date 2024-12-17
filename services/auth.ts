@@ -2,6 +2,7 @@
 
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { prisma } from '@/lib/prisma-client';
+import { MembershipRole, MembershipStatus } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 
@@ -30,6 +31,22 @@ export const signup = async (credentials: {
         hashedPassword
       }
     });
+
+    if (newUser) {
+      // Create a default tenant for the user
+      await prisma.tenant.create({
+        data: {
+          name: 'Default Organization',
+          memberships: {
+            create: {
+              userId: newUser.id,
+              role: MembershipRole.OWNER,
+              status: MembershipStatus.ACTIVE
+            }
+          }
+        }
+      });
+    }
 
     return {
       data: { id: newUser.id }

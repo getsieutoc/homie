@@ -3,9 +3,11 @@ import { Toaster } from '@/components/ui/sonner';
 import NextTopLoader from 'nextjs-toploader';
 import { Lato } from 'next/font/google';
 import type { Metadata } from 'next';
-import { auth } from '@/auth';
+import { getAuth } from '@/auth';
 
 import './globals.css';
+import { Sign } from 'crypto';
+import { SignOutTrigger } from '@/components/signout-trigger';
 
 export const metadata: Metadata = {
   title: 'Next Shadcn',
@@ -23,7 +25,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const { session, user } = await getAuth();
+
+  if (session && !user) {
+    return <SignOutTrigger />;
+  }
 
   return (
     <html
