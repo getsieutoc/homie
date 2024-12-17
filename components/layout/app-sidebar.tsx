@@ -53,7 +53,8 @@ export const company = {
 };
 
 export const AppSidebar = () => {
-  const { session, status: isLoading, user } = useAuth();
+  const { session, isLoading, user } = useAuth();
+
   const pathname = usePathname();
 
   if (isLoading) {
@@ -77,7 +78,7 @@ export const AppSidebar = () => {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="overflow-x-hidden">
+      <SidebarContent className="asdfasdf overflow-x-hidden">
         <SidebarGroup>
           <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>

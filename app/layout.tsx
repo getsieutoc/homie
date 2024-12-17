@@ -1,9 +1,10 @@
-import { auth } from '@/auth';
-import { GeneralProviders } from '@/components/layout/providers';
+import { GeneralProviders } from '@/components/general-providers';
 import { Toaster } from '@/components/ui/sonner';
-import type { Metadata } from 'next';
-import { Lato } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
+import { Lato } from 'next/font/google';
+import type { Metadata } from 'next';
+import { auth } from '@/auth';
+
 import './globals.css';
 
 export const metadata: Metadata = {

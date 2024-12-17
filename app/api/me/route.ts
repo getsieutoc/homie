@@ -6,17 +6,13 @@ export async function GET() {
   try {
     const session = await auth();
 
-    console.log({ session });
-
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(null, { status: 201 });
     }
 
     const foundMe = await prisma.user.findUnique({
       where: { id: session.user.id }
     });
-
-    console.log({ foundMe });
 
     return NextResponse.json(foundMe, { status: 200 });
   } catch (error) {

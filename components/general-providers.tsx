@@ -1,10 +1,11 @@
 'use client';
 
-import { SessionProvider, SessionProviderProps } from 'next-auth/react';
+import { SessionProvider, type SessionProviderProps } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { Provider as JotaiProvider } from 'jotai';
 import { configs } from '@/lib/swr-configs';
 import { SWRConfig } from 'swr';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 export const GeneralProviders = ({
   session,
@@ -16,7 +17,9 @@ export const GeneralProviders = ({
   return (
     <SWRConfig value={configs}>
       <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <SessionProvider session={session}>
+          <JotaiProvider>{children}</JotaiProvider>
+        </SessionProvider>
       </NextThemesProvider>
     </SWRConfig>
   );
