@@ -291,8 +291,8 @@ const SidebarTrigger = forwardRef<
     <Button
       ref={ref}
       data-sidebar="trigger"
-      variant="destructive"
       size="icon"
+      variant="outline"
       className={cn('h-7 w-7', className)}
       onClick={(event) => {
         onClick?.(event);
