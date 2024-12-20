@@ -13,7 +13,10 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier . --write",
     "prisma": "prisma",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "lint-staged": {
     "**/*": [
@@ -91,6 +94,10 @@
   },
   "devDependencies": {
     "@faker-js/faker": "9.0.3",
+    "@testing-library/dom": "10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/bcrypt": "5.0.2",
     "@types/node": "20.5.7",
     "@types/react": "18.2.21",
@@ -98,15 +105,19 @@
     "@types/sort-by": "1.2.3",
     "@types/uuid": "9.0.7",
     "@typescript-eslint/eslint-plugin": "6.11.0",
+    "@vitejs/plugin-react": "4.3.4",
     "eslint": "8.48.0",
     "eslint-config-next": "14.0.1",
     "husky": "9.0.11",
+    "jsdom": "25.0.1",
     "lint-staged": "15.2.7",
     "prettier": "3.0.3",
     "prettier-plugin-prisma": "5.0.0",
     "prettier-plugin-tailwindcss": "0.5.14",
     "prisma": "6.0.1",
     "rimraf": "6.0.1",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "2.1.8"
   }
 }
