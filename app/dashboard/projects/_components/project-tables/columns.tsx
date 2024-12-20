@@ -19,27 +19,27 @@ export const columns: ColumnDef<Product>[] = [
           />
         </div>
       );
-    }
+    },
   },
   {
     accessorKey: 'name',
-    header: 'NAME'
+    header: 'NAME',
   },
   {
     accessorKey: 'category',
-    header: 'CATEGORY'
+    header: 'CATEGORY',
   },
   {
     accessorKey: 'price',
-    header: 'PRICE'
+    header: 'PRICE',
   },
   {
     accessorKey: 'description',
-    header: 'DESCRIPTION'
+    header: 'DESCRIPTION',
   },
 
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
-  }
+    cell: ({ row }) => <CellAction data={row.original} />,
+  },
 ];

@@ -4,6 +4,8 @@ import { ReactNode } from 'react';
 // why it does not effect?
 export * from '@prisma/client';
 
+export * from '@/lib/rich-includes';
+
 export type LayoutProps = {
   children: ReactNode;
 };
@@ -51,5 +53,5 @@ export enum HttpMethod {
   PATCH = 'PATCH',
   POST = 'POST',
   PUT = 'PUT',
-  TRACE = 'TRACE'
+  TRACE = 'TRACE',
 }

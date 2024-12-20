@@ -21,6 +21,7 @@ enum MembershipRole {
 
 enum MembershipStatus {
   PENDING
+  JOINED
   ACTIVE
   DISABLED
 }
@@ -29,6 +30,7 @@ model User {
   id             String       @id @default(cuid())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
+  deletedAt      DateTime?
   name           String?
   email          String       @unique
   emailVerified  DateTime?
@@ -53,8 +55,9 @@ model Account {
   id_token          String?
   session_state     String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -83,6 +86,7 @@ model Tenant {
   id          String       @id @default(cuid())
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
+  deletedAt   DateTime?
   name        String
   projects    Project[]
   memberships Membership[]
@@ -92,6 +96,7 @@ model Membership {
   id        String           @id @default(cuid())
   createdAt DateTime         @default(now())
   updatedAt DateTime         @default(now()) @updatedAt
+  deleledAt DateTime?
   tenantId  String
   tenant    Tenant           @relation(fields: [tenantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId    String
@@ -103,14 +108,15 @@ model Membership {
 }
 
 model Project {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  name      String
-  domain    String
-  tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  apiKeys   ApiKey[]
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  deletedAt   DateTime?
+  domain      String    @unique
+  description String?
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  apiKeys     ApiKey[]
 
   @@index([tenantId])
 }

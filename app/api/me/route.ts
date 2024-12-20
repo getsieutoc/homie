@@ -1,3 +1,4 @@
+import { userIncludes } from '@/lib/rich-includes';
 import { prisma } from '@/lib/prisma-client';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
@@ -11,7 +12,8 @@ export async function GET() {
     }
 
     const foundMe = await prisma.user.findUnique({
-      where: { id: session.user.id }
+      where: { id: session.user.id },
+      include: userIncludes,
     });
 
     return NextResponse.json(foundMe, { status: 200 });

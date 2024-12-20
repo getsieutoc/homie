@@ -1,8 +1,8 @@
 'use server';
 
+import { MembershipRole, MembershipStatus } from '@prisma/client';
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { prisma } from '@/lib/prisma-client';
-import { MembershipRole, MembershipStatus } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 
@@ -15,7 +15,7 @@ export const signup = async (credentials: {
   const parsedCredentials = z
     .object({
       email: z.string().email(),
-      password: z.string().min(MIN_PASSWORD_LENGTH)
+      password: z.string().min(MIN_PASSWORD_LENGTH),
     })
     .safeParse(credentials);
 
@@ -28,8 +28,8 @@ export const signup = async (credentials: {
     const newUser = await prisma.user.create({
       data: {
         email,
-        hashedPassword
-      }
+        hashedPassword,
+      },
     });
 
     if (newUser) {
@@ -41,19 +41,19 @@ export const signup = async (credentials: {
             create: {
               userId: newUser.id,
               role: MembershipRole.OWNER,
-              status: MembershipStatus.ACTIVE
-            }
-          }
-        }
+              status: MembershipStatus.ACTIVE,
+            },
+          },
+        },
       });
     }
 
     return {
-      data: { id: newUser.id }
+      data: { id: newUser.id },
     };
   }
 
   return {
-    message: 'Credentials are invalid'
+    message: 'Credentials are invalid',
   };
 };

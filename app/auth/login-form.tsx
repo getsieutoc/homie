@@ -7,7 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '@/components/ui/form';
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,8 +23,8 @@ import * as z from 'zod';
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
   password: z.string().min(MIN_PASSWORD_LENGTH, {
-    message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
-  })
+    message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+  }),
 });
 
 type Inputs = z.infer<typeof formSchema>;
@@ -40,12 +40,12 @@ export const LoginForm = () => {
 
   const defaultValues = {
     email: '',
-    password: ''
+    password: '',
   };
 
   const form = useForm<Inputs>({
     resolver: zodResolver(formSchema),
-    defaultValues
+    defaultValues,
   });
 
   const onSubmit = async (inputs: Inputs) => {
@@ -53,7 +53,7 @@ export const LoginForm = () => {
       signIn('credentials', {
         email: inputs.email,
         password: inputs.password,
-        callbackUrl: callbackUrl ?? '/dashboard'
+        callbackUrl: callbackUrl ?? '/dashboard',
       });
       toast.success('Logged In Successfully!');
     });
@@ -68,52 +68,56 @@ export const LoginForm = () => {
         </p>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Enter your email..."
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+        <div className="space-y-2">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email..."
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" disabled={loading} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" disabled={loading} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <Button disabled={loading} className="ml-auto w-full" type="submit">
-          Login
-        </Button>
+        <div className="space-y-2">
+          <Button disabled={loading} className="ml-auto w-full" type="submit">
+            Login
+          </Button>
 
-        <Button
-          disabled={loading}
-          className="ml-auto w-full"
-          variant="ghost"
-          onClick={() => setAuthMode('signup')}
-        >
-          Sign Up
-        </Button>
+          <Button
+            disabled={loading}
+            className="ml-auto w-full"
+            variant="ghost"
+            onClick={() => setAuthMode('signup')}
+          >
+            Sign Up
+          </Button>
+        </div>
       </form>
     </Form>
   );

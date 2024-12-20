@@ -1,13 +1,13 @@
 import { fakeProducts, Product } from '@/constants/mock-api';
 import { notFound } from 'next/navigation';
-import ProductForm from './product-form';
+import { ProjectForm } from './project-form';
 
 type TProductViewPageProps = {
   productId: string;
 };
 
-export default async function ProductViewPage({
-  productId
+export default async function ProjectView({
+  productId,
 }: TProductViewPageProps) {
   let product = null;
   let pageTitle = 'Create New Product';
@@ -21,5 +21,5 @@ export default async function ProductViewPage({
     pageTitle = `Edit Product`;
   }
 
-  return <ProductForm initialData={product} pageTitle={pageTitle} />;
+  return <ProjectForm initialData={product} />;
 }

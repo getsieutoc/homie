@@ -15,7 +15,7 @@ export const users: User[] = [
     company: 'Dell',
     role: 'Frontend Developer',
     verified: false,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ export const users: User[] = [
     company: 'TechCorp',
     role: 'Backend Developer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ export const users: User[] = [
     company: 'WebTech',
     role: 'UI Designer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 4,
@@ -39,7 +39,7 @@ export const users: User[] = [
     company: 'Innovate Inc.',
     role: 'Fullstack Developer',
     verified: false,
-    status: 'Inactive'
+    status: 'Inactive',
   },
   {
     id: 5,
@@ -47,7 +47,7 @@ export const users: User[] = [
     company: 'TechGuru',
     role: 'Product Manager',
     verified: true,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 6,
@@ -55,7 +55,7 @@ export const users: User[] = [
     company: 'CodeGenius',
     role: 'QA Engineer',
     verified: false,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 7,
@@ -63,7 +63,7 @@ export const users: User[] = [
     company: 'SoftWorks',
     role: 'UX Designer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 8,
@@ -71,7 +71,7 @@ export const users: User[] = [
     company: 'DevCraft',
     role: 'DevOps Engineer',
     verified: false,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 9,
@@ -79,7 +79,7 @@ export const users: User[] = [
     company: 'WebSolutions',
     role: 'Frontend Developer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
   },
   {
     id: 10,
@@ -87,8 +87,8 @@ export const users: User[] = [
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
-    status: 'Active'
-  }
+    status: 'Active',
+  },
 ];
 
 export type Employee = {
@@ -97,7 +97,6 @@ export type Employee = {
   last_name: string;
   email: string;
   phone: string;
-  gender: string;
   date_of_birth: string; // Consider using a proper date type if possible
   street: string;
   city: string;
@@ -128,15 +127,7 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     isActive: false,
     shortcut: ['g', 'g'],
-    items: [] // Empty array as there are no child items for Dashboard
-  },
-  {
-    title: 'Employees',
-    url: '/dashboard/employee',
-    icon: 'user',
-    shortcut: ['g', 'e'],
-    isActive: false,
-    items: [] // No child items
+    items: [], // Empty array as there are no child items for Dashboard
   },
   {
     title: 'Projects',
@@ -144,12 +135,12 @@ export const navItems: NavItem[] = [
     icon: 'project',
     shortcut: ['g', 'p'],
     isActive: false,
-    items: [] // No child items
+    items: [], // No child items
   },
   {
-    title: 'Account',
+    title: 'Settings',
     url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
+    icon: 'settings',
     isActive: true,
 
     items: [
@@ -157,22 +148,14 @@ export const navItems: NavItem[] = [
         title: 'Profile',
         url: '/dashboard/profile',
         icon: 'userPen',
-        shortcut: ['g', 'm']
+        shortcut: ['g', 'm'],
       },
       {
-        title: 'Login',
-        shortcut: ['g', 'l'],
-        url: '/',
-        icon: 'login'
-      }
-    ]
+        title: 'Organization',
+        url: '/dashboard/organization',
+        icon: 'userPen',
+        shortcut: ['g', 'o'],
+      },
+    ],
   },
-  {
-    title: 'Kanban',
-    url: '/dashboard/kanban',
-    icon: 'kanban',
-    shortcut: ['g', 'k'],
-    isActive: false,
-    items: [] // No child items
-  }
 ];

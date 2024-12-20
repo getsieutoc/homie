@@ -2,10 +2,12 @@ import CredentialProvider from 'next-auth/providers/credentials';
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
 import { prisma, PrismaClient } from '@/lib/prisma-client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { userIncludes } from '@/lib/rich-includes';
 import authConfig from '@/auth.config';
 import NextAuth from 'next-auth';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
+import { MembershipStatus } from '@prisma/client';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -18,18 +20,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     CredentialProvider({
       credentials: {
         email: {
-          type: 'email'
+          type: 'email',
         },
         password: {
-          type: 'password'
-        }
+          type: 'password',
+        },
       },
 
       async authorize(credentials) {
         const parsedCredentials = z
           .object({
             email: z.string().email(),
-            password: z.string().min(MIN_PASSWORD_LENGTH)
+            password: z.string().min(MIN_PASSWORD_LENGTH),
           })
           .safeParse(credentials);
 
@@ -38,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const user = await prisma.user.findUnique({
             omit: { hashedPassword: false },
-            where: { email }
+            where: { email },
           });
 
           if (!user) return null;
@@ -48,14 +50,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!isValid) return null;
 
           return {
-            id: user.id
+            id: user.id,
           };
         }
 
         return null;
-      }
-    })
-  ]
+      },
+    }),
+  ],
 });
 
 export const getAuth = async () => {
@@ -63,9 +65,14 @@ export const getAuth = async () => {
 
   const user = session
     ? await prisma.user.findUnique({
-        where: { id: session.user.id }
+        where: { id: session.user.id },
+        include: userIncludes,
       })
     : null;
 
-  return { session, user };
+  const activeMembership = user?.memberships.find(
+    (membership) => membership.status === MembershipStatus.ACTIVE
+  );
+
+  return { session, user, activeMembership };
 };

@@ -10,7 +10,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,27 +18,24 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.'
+    message: 'Name must be at least 2 characters.',
   }),
   country: z.string({
-    required_error: 'Please select a country.'
+    required_error: 'Please select a country.',
   }),
   email: z.string().email({
-    message: 'Please enter a valid email address.'
+    message: 'Please enter a valid email address.',
   }),
   company: z.string().min(1, {
-    message: 'Company name is required.'
+    message: 'Company name is required.',
   }),
-  gender: z.enum(['male', 'female', 'other'], {
-    required_error: 'Please select a gender.'
-  })
 });
 
 export default function EmployeeForm() {
@@ -49,8 +46,7 @@ export default function EmployeeForm() {
       country: '',
       email: '',
       company: '',
-      gender: undefined
-    }
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -139,42 +135,6 @@ export default function EmployeeForm() {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      className="flex space-x-4"
-                    >
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <RadioGroupItem value="male" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Male</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <RadioGroupItem value="female" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Female</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <RadioGroupItem value="other" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Other</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <Button type="submit">Submit</Button>
           </form>
         </Form>

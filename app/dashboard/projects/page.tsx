@@ -1,26 +1,27 @@
-import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
-import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
+import PageContainer from '@/components/layout/page-container';
+import { Separator } from '@/components/ui/separator';
+import { Heading } from '@/components/ui/heading';
 import { SearchParams } from 'nuqs/parsers';
 import { Suspense } from 'react';
-import ProductListingPage from './_components/product-listing';
-import ProductTableAction from './_components/product-tables/product-table-action';
+import { revalidatePath } from 'next/cache';
+import { toast } from 'sonner';
+
+import ProjectTableAction from './_components/project-tables/project-table-action';
+import ProjectListingPage from './_components/project-listing';
+import { AddProjectModal } from './_components/add-project-modal';
+import { createProject } from '@/services/projects';
 
 export const metadata = {
-  title: 'Dashboard: Products'
+  title: 'Projects | Homie',
 };
 
 type pageProps = {
   searchParams: SearchParams;
 };
 
-export default async function Page({ searchParams }: pageProps) {
+export default async function ProjectsPage({ searchParams }: pageProps) {
   // Allow nested RSCs to access the search params (in a type-safe way)
   searchParamsCache.parse(searchParams);
 
@@ -31,24 +32,18 @@ export default async function Page({ searchParams }: pageProps) {
     <PageContainer>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <Heading
-            title="Products"
-            description="Manage products (Server side table functionalities.)"
-          />
-          <Link
-            href="/dashboard/product/new"
-            className={cn(buttonVariants(), 'text-xs md:text-sm')}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
+          <Heading title="Projects" description="Manage projects" />
+          <AddProjectModal />
         </div>
         <Separator />
-        <ProductTableAction />
+
+        <ProjectTableAction />
+
         <Suspense
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
-          <ProductListingPage />
+          <ProjectListingPage />
         </Suspense>
       </div>
     </PageContainer>
