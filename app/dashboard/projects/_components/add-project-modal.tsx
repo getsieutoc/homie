@@ -25,10 +25,17 @@ import { useState } from 'react';
 import { useForm } from '@/hooks';
 import * as z from 'zod';
 
+const cleanDomain = (domain: string) => {
+  return domain.replace(/^https?:\/\//, '').trim();
+};
+
 const formSchema = z.object({
-  domain: z.string().min(2, {
-    message: 'Domain name must be at least 2 characters.',
-  }),
+  domain: z
+    .string()
+    .min(3, {
+      message: 'Domain name must be at least 2 characters.',
+    })
+    .transform(cleanDomain),
 });
 
 type FormInputs = z.infer<typeof formSchema>;
@@ -79,6 +86,10 @@ export function AddProjectModal() {
                         <Input
                           placeholder="Enter domain name without http or https"
                           {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(cleanDomain(value));
+                          }}
                         />
                       </FormControl>
                       <FormMessage />

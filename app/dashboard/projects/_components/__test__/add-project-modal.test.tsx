@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { AddProjectModal } from './add-project-modal';
+import { AddProjectModal } from '../add-project-modal';
 import { upsertProject } from '@/services/projects';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
