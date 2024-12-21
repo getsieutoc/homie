@@ -1,11 +1,20 @@
 {
-  "arrowParens": "always",
-  "bracketSpacing": true,
-  "semi": true,
-  "useTabs": false,
-  "trailingComma": "es5",
-  "singleQuote": true,
-  "tabWidth": 2,
-  "endOfLine": "lf",
-  "plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-prisma"]
+  "$schema": "http://json.schemastore.org/prettierrc",
+  "plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-prisma"],
+  "overrides": [
+    {
+      "files": ["*.yaml", "*.json"],
+      "options": {
+        "singleQuote": false
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "options": {
+        "printWidth": 90,
+        "singleQuote": true,
+        "trailingComma": "es5"
+      }
+    }
+  ]
 }

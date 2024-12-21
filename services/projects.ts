@@ -18,7 +18,7 @@ export type CreateProjectData = {
 export type UpsertProjectData = {
   domain: string;
   description?: string;
-  id?: string | null;
+  id?: string;
 };
 
 export const getProjects = async (filters?: ProjectFilters) => {
@@ -69,25 +69,29 @@ export const getProjects = async (filters?: ProjectFilters) => {
 };
 
 export const upsertProject = async (data: UpsertProjectData) => {
-  const { id, ...rest } = data;
-  console.log({ id, rest });
+  try {
+    const { id, ...rest } = data;
 
-  const { session, activeMembership, user } = await getAuth();
+    const { session, activeMembership } = await getAuth();
 
-  console.log({ session, activeMembership, user });
+    if (!session || !activeMembership) {
+      throw new Error('Unauthorized');
+    }
 
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+    if (id) {
+      return await prisma.project.update({
+        where: { id },
+        data: { ...rest },
+      });
+    }
 
-  if (id && activeMembership) {
-    const project = await prisma.project.upsert({
-      where: { id },
-      update: { ...rest },
-      create: { ...rest, tenantId: activeMembership.tenantId },
+    return await prisma.project.create({
+      data: {
+        ...rest,
+        tenantId: activeMembership.tenantId,
+      },
     });
-    return project;
+  } catch (error) {
+    console.error(error);
   }
-
-  return null;
 };

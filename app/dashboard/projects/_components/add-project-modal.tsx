@@ -18,7 +18,6 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { upsertProject } from '@/services/projects';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus } from 'lucide-react';
@@ -30,9 +29,6 @@ const formSchema = z.object({
   domain: z.string().min(2, {
     message: 'Domain name must be at least 2 characters.',
   }),
-  description: z.string().min(10, {
-    message: 'Description must be at least 10 characters.',
-  }),
 });
 
 type FormInputs = z.infer<typeof formSchema>;
@@ -42,7 +38,6 @@ export function AddProjectModal() {
 
   const defaultValues = {
     domain: '',
-    description: '',
   };
 
   const form = useForm<FormInputs>({
@@ -55,6 +50,7 @@ export function AddProjectModal() {
 
     if (response) {
       setOpen(false);
+      form.reset();
     }
   };
 
@@ -72,10 +68,7 @@ export function AddProjectModal() {
         <Card className="mx-auto w-full border-0 shadow-none">
           <CardContent className="pt-6">
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                   control={form.control}
                   name="domain"
@@ -85,24 +78,6 @@ export function AddProjectModal() {
                       <FormControl>
                         <Input
                           placeholder="Enter domain name without http or https"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Enter project description"
-                          className="resize-none"
                           {...field}
                         />
                       </FormControl>
