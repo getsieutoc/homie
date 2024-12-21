@@ -3,6 +3,7 @@
 import { getAuth } from '@/auth';
 import { prisma } from '@/lib/prisma-client';
 import { Prisma } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 export type ProjectFilters = {
   page?: number;
@@ -24,38 +25,35 @@ export type UpsertProjectData = {
 export const getProjects = async (filters?: ProjectFilters) => {
   const { page = 1, limit = 10, search } = filters || {};
 
-  // Calculate pagination
-  const skip = (page - 1) * limit;
-
-  // Build where clause
-  const where = {
-    AND: [
-      // Add search filter
-      search
-        ? {
-            OR: [
-              {
-                name: { contains: search, mode: Prisma.QueryMode.insensitive },
-              },
-              {
-                description: {
-                  contains: search,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
-            ],
-          }
-        : {},
-    ],
-  };
-
-  // Get total count for pagination
-  const projectsNumber = await prisma.project.count({ where });
-
   // Get paginated and filtered results
   const projects = await prisma.project.findMany({
-    where,
-    skip,
+    where: {
+      AND: [
+        {
+          deletedAt: null,
+        },
+        // Add search filter
+        search
+          ? {
+              OR: [
+                {
+                  domain: {
+                    contains: search,
+                    mode: Prisma.QueryMode.insensitive,
+                  },
+                },
+                {
+                  description: {
+                    contains: search,
+                    mode: Prisma.QueryMode.insensitive,
+                  },
+                },
+              ],
+            }
+          : {},
+      ],
+    },
+    skip: (page - 1) * limit,
     take: limit,
     orderBy: {
       createdAt: 'desc',
@@ -64,8 +62,30 @@ export const getProjects = async (filters?: ProjectFilters) => {
 
   return {
     projects,
-    totalProjects: projectsNumber,
+    projectsNumber: projects.length,
   };
+};
+
+export const deleteProject = async (id: string) => {
+  try {
+    const { session } = await getAuth();
+
+    if (!session) {
+      throw new Error('Unauthorized');
+    }
+
+    const deletedProject = await prisma.project.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    revalidatePath('/dashboard/projects');
+
+    return deletedProject;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const upsertProject = async (data: UpsertProjectData) => {
@@ -79,11 +99,18 @@ export const upsertProject = async (data: UpsertProjectData) => {
     }
 
     if (id) {
-      return await prisma.project.update({
+      const updateProject = await prisma.project.update({
         where: { id },
         data: { ...rest },
       });
+
+      revalidatePath(`/dashboard/projects/${id}`, 'layout');
+
+      return updateProject;
     }
+
+    // Clear NextJS cache for projects
+    revalidatePath('/dashboard/projects');
 
     return await prisma.project.create({
       data: {

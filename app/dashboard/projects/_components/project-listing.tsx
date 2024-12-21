@@ -1,12 +1,10 @@
-import { DataTable as ProductTable } from '@/components/ui/table/data-table';
+import { DataTable } from '@/components/ui/table/data-table';
 import { searchParamsCache } from '@/lib/searchparams';
-import { fakeProducts } from '@/constants/mock-api';
-import { Product } from '@/constants/data';
-
-import { columns } from './project-tables/columns';
 import { getProjects } from '@/services/projects';
 
-export default async function ProductListing() {
+import { columns } from './project-tables/columns';
+
+export default async function ProjectListing() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
@@ -20,19 +18,7 @@ export default async function ProductListing() {
     ...(categories && { categories: categories }),
   };
 
-  const data = await fakeProducts.getProducts(filters);
-  const totalProducts = data.total_products;
-  const products: Product[] = data.products;
+  const { projects, projectsNumber } = await getProjects(filters);
 
-  const { projects } = await getProjects(filters);
-
-  console.log('projects', projects);
-
-  return (
-    <ProductTable
-      columns={columns}
-      data={products}
-      totalItems={totalProducts}
-    />
-  );
+  return <DataTable columns={columns} data={projects} totalItems={projectsNumber} />;
 }

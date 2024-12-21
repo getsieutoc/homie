@@ -8,21 +8,33 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Product } from '@/constants/data';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { type Project } from '@/types';
 import { useState } from 'react';
+import { deleteProject } from '@/services/projects';
 
 interface CellActionProps {
-  data: Product;
+  data: Project;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
+
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    try {
+      setLoading(true);
+      await deleteProject(data.id);
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+    } finally {
+      setOpen(false);
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -32,6 +44,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
       />
+
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -43,6 +56,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
+            disabled
             onClick={() => router.push(`/dashboard/product/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update

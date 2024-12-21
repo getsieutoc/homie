@@ -9,9 +9,8 @@ import { revalidatePath } from 'next/cache';
 import { toast } from 'sonner';
 
 import ProjectTableAction from './_components/project-tables/project-table-action';
-import ProjectListingPage from './_components/project-listing';
+import ProjectListing from './_components/project-listing';
 import { AddProjectModal } from './_components/add-project-modal';
-import { createProject } from '@/services/projects';
 
 export const metadata = {
   title: 'Projects | Homie',
@@ -43,7 +42,7 @@ export default async function ProjectsPage({ searchParams }: pageProps) {
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
-          <ProjectListingPage />
+          <ProjectListing />
         </Suspense>
       </div>
     </PageContainer>

@@ -1,43 +1,30 @@
 'use client';
-import { Product } from '@/constants/data';
+
 import { ColumnDef } from '@tanstack/react-table';
-import Image from 'next/image';
+import { format } from 'date-fns';
+import { Project } from '@/types';
+
 import { CellAction } from './cell-action';
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<Project>[] = [
   {
-    accessorKey: 'photo_url',
-    header: 'IMAGE',
-    cell: ({ row }) => {
-      return (
-        <div className="relative aspect-square">
-          <Image
-            src={row.getValue('photo_url')}
-            alt={row.getValue('name')}
-            fill
-            className="rounded-lg"
-          />
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'name',
-    header: 'NAME',
-  },
-  {
-    accessorKey: 'category',
-    header: 'CATEGORY',
-  },
-  {
-    accessorKey: 'price',
-    header: 'PRICE',
+    accessorKey: 'domain',
+    header: 'Domain',
   },
   {
     accessorKey: 'description',
-    header: 'DESCRIPTION',
+    header: 'Description',
   },
-
+  {
+    accessorKey: 'updatedAt',
+    header: 'Last updated',
+    cell: ({ row }) => {
+      const value = row.getValue<Project['updatedAt']>('updatedAt');
+      if (!value) return '-';
+      const date = value instanceof Date ? value : new Date(value);
+      return <div>{format(date, 'dd.MM.yyyy HH:mm')}</div>;
+    },
+  },
   {
     id: 'actions',
     cell: ({ row }) => <CellAction data={row.original} />,
