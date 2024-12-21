@@ -2,7 +2,7 @@ import { DataTable } from '@/components/ui/table/data-table';
 import { searchParamsCache } from '@/lib/searchparams';
 import { getProjects } from '@/services/projects';
 
-import { columns } from './project-tables/columns';
+import { columns } from './project-table/columns';
 
 export default async function ProjectListing() {
   // Showcasing the use of search params cache in nested RSCs

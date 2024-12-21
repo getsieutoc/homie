@@ -11,11 +11,6 @@ export type ProjectFilters = {
   search?: string;
 };
 
-export type CreateProjectData = {
-  name: string;
-  domain: string;
-};
-
 export type UpsertProjectData = {
   domain: string;
   description?: string;

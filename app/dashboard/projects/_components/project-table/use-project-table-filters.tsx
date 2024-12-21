@@ -17,9 +17,7 @@ export const CATEGORY_OPTIONS = [
 export function useProductTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
-    searchParams.q
-      .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault('')
+    searchParams.q.withOptions({ shallow: false, throttleMs: 1000 }).withDefault('')
   );
 
   const [categoriesFilter, setCategoriesFilter] = useQueryState(
@@ -27,10 +25,7 @@ export function useProductTableFilters() {
     searchParams.categories.withOptions({ shallow: false }).withDefault('')
   );
 
-  const [page, setPage] = useQueryState(
-    'page',
-    searchParams.page.withDefault(1)
-  );
+  const [page, setPage] = useQueryState('page', searchParams.page.withDefault(1));
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);

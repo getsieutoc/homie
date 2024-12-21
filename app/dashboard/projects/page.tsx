@@ -8,7 +8,7 @@ import { Suspense } from 'react';
 import { revalidatePath } from 'next/cache';
 import { toast } from 'sonner';
 
-import ProjectTableAction from './_components/project-tables/project-table-action';
+import ProjectTableAction from './_components/project-table/project-table-action';
 import ProjectListing from './_components/project-listing';
 import { AddProjectModal } from './_components/add-project-modal';
 

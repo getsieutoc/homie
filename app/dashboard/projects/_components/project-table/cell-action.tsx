@@ -9,20 +9,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { type Project } from '@/types';
 import { useState } from 'react';
 import { deleteProject } from '@/services/projects';
 
-interface CellActionProps {
+export type Props = {
   data: Project;
-}
+};
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const CellAction = ({ data }: Props) => {
   const [loading, setLoading] = useState(false);
-
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
   const onConfirm = async () => {
     try {
@@ -45,7 +42,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         loading={loading}
       />
 
-      <DropdownMenu modal={false}>
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -55,10 +52,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            disabled
-            onClick={() => router.push(`/dashboard/product/${data.id}`)}
-          >
+          <DropdownMenuItem disabled>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
