@@ -1,5 +1,5 @@
 import { userIncludes } from '@/lib/rich-includes';
-import { prisma } from '@/lib/prisma-client';
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 
@@ -18,7 +18,6 @@ export async function GET() {
 
     return NextResponse.json(foundMe, { status: 200 });
   } catch (error) {
-    console.error('Error in GET function:', error);
     return NextResponse.json(
       { success: false, message: 'Can not get my profile data' },
       { status: 500 }

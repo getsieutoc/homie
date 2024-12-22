@@ -56,9 +56,205 @@ export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;
 
-export type VirusTotalResult = {
-  method: string;
-  result: string;
-  category: string;
-  engine_name: string;
+export type VTEngineName =
+  | 'Bkav'
+  | 'CRDF'
+  | 'Cyan'
+  | 'DNS8'
+  | 'ESET'
+  | 'Lumu'
+  | 'Cyble'
+  | 'Ermes'
+  | 'IPsum'
+  | 'VIPRE'
+  | 'zvelo'
+  | 'Abusix'
+  | 'Dr.Web'
+  | 'G-Data'
+  | 'Lionic'
+  | 'Sophos'
+  | 'Acronis'
+  | 'Blueliv'
+  | 'Certego'
+  | 'CyRadar'
+  | 'Quttera'
+  | 'Segasec'
+  | 'Spam404'
+  | 'URLhaus'
+  | 'Webroot'
+  | 'ZeroFox'
+  | 'AlphaSOC'
+  | 'AutoShun'
+  | 'Emsisoft'
+  | 'Fortinet'
+  | 'Malwared'
+  | 'Netcraft'
+  | 'PREBYTES'
+  | 'SOCRadar'
+  | 'URLQuery'
+  | 'VX Vault'
+  | 'ViriBack'
+  | 'ZeroCERT'
+  | '0xSI_f33d'
+  | 'Antiy-AVL'
+  | 'CINS Army'
+  | 'Cluster25'
+  | 'GreenSnow'
+  | 'Kaspersky'
+  | 'OpenPhish'
+  | 'PhishFort'
+  | 'PhishLabs'
+  | 'Phishtank'
+  | 'Scantitan'
+  | 'Seclookup'
+  | 'Trustwave'
+  | 'benkow.cc'
+  | 'AlienVault'
+  | 'Gridinsoft'
+  | 'MalwareURL'
+  | 'Quick Heal'
+  | 'SafeToOpen'
+  | 'ThreatHive'
+  | 'Underworld'
+  | 'ADMINUSLabs'
+  | 'BitDefender'
+  | 'Criminal IP'
+  | 'ESTsecurity'
+  | 'SecureBrain'
+  | 'PrecisionSec'
+  | 'SCUMWARE.org'
+  | 'securolytics'
+  | 'Chong Lua Dao'
+  | 'MalwarePatrol'
+  | 'StopForumSpam'
+  | 'Threatsourcing'
+  | 'EmergingThreats'
+  | 'Sansec eComscan'
+  | 'desenmascara.me'
+  | 'Heimdal Security'
+  | 'Juniper Networks'
+  | 'Sucuri SiteCheck'
+  | 'alphaMountain.ai'
+  | 'Bfore.Ai PreCrime'
+  | 'Phishing Database'
+  | 'AILabs (MONITORAPP)'
+  | 'CSIS Security Group'
+  | 'Google Safebrowsing'
+  | 'Yandex Safebrowsing'
+  | 'Hunt.io Intelligence'
+  | 'Snort IP sample list'
+  | 'Xcitium Verdict Cloud'
+  | 'CMC Threat Intelligence'
+  | 'Forcepoint ThreatSeeker'
+  | 'malwares.com URL checker'
+  | 'Viettel Threat Intelligence'
+  | 'ArcSight Threat Intelligence';
+
+export type VTHostRecord = {
+  ttl?: number;
+  type?: string;
+  value?: string;
+  priority?: number;
 };
+
+export type VTResult = {
+  method: string;
+  result: 'clean' | 'unrated' | 'malicious' | 'suspicious' | 'phishing';
+  category: 'undetected' | 'harmless' | 'malicious' | 'suspicious';
+  engine_name: VTEngineName;
+};
+
+// NOTE: Learn more from this https://docs.virustotal.com/reference/domains-object
+export type VTDomainResult = {
+  data: {
+    id: string;
+    type?: string;
+    links?: {
+      self?: string;
+    };
+    attributes: {
+      categories?: Record<string, never>;
+      last_modification_date?: number;
+      creation_date?: number;
+      reputation?: number;
+      last_https_certificate?: {
+        cert_signature?: {
+          signature_algorithm?: string;
+          signature?: string;
+        };
+        extensions?: {
+          key_usage?: string[];
+          extended_key_usage?: string[];
+          CA?: boolean;
+          subject_alternative_name?: string[];
+        };
+        validity?: {
+          not_after?: string;
+          not_before?: string;
+        };
+        size?: number;
+        version?: string;
+        public_key?: {
+          algorithm?: string;
+          rsa?: {
+            modulus?: string;
+            exponent?: string;
+            key_size?: number;
+          };
+        };
+        thumbprint_sha256?: string;
+        thumbprint?: string;
+        serial_number?: string;
+        issuer?: {
+          CN?: string;
+        };
+        subject?: {
+          CN?: string;
+        };
+      };
+      last_https_certificate_date?: number;
+      popularity_ranks?: Record<string, never>;
+      tags?: string[];
+      last_analysis_stats: {
+        malicious?: number;
+        suspicious?: number;
+        undetected?: number;
+        harmless?: number;
+        timeout?: number;
+      };
+      last_analysis_results: Record<VTEngineName, VTResult>;
+      tld?: string;
+      jarm?: string;
+      last_dns_records: Array<{
+        type?: string;
+        ttl?: number;
+        value?: string;
+        priority?: number;
+        rname?: string;
+        serial?: number;
+        refresh?: number;
+        retry?: number;
+        expire?: number;
+        minimum?: number;
+      }>;
+      last_dns_records_date?: number;
+      whois?: string;
+      total_votes?: {
+        harmless?: number;
+        malicious?: number;
+      };
+      last_analysis_date?: number;
+      whois_date?: number;
+      last_update_date?: number;
+    };
+  };
+};
+
+export type VTDomainError = {
+  error: {
+    code?: string;
+    message?: string;
+  };
+};
+
+export type VTDomainResponse = VTDomainResult | VTDomainError;

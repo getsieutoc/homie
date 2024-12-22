@@ -1,82 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 import { checkDomain } from '@/services/virustotal';
-import { type VirusTotalResult } from '@/types';
-import { prisma } from '@/lib/prisma-client';
-import { headers } from 'next/headers';
 
-function isIssue(result: VirusTotalResult) {
-  return result.result !== 'clean' && result.result !== 'unrated';
-}
+export async function POST(req: NextApiRequest) {
+  // Check the trigger source
+  // if (req.headers['trigger-source'] !== process.env.TRIGGER_URL) {
+  //   return NextResponse.json({ error: 'Forbidden' });
+  // }
 
-export async function POST(req: NextRequest) {
   try {
-    // Get the host domain of the request
-    const host = req.headers.get('host');
-
-    // Verify cron secret to ensure request is authorized
-    const headersList = headers();
-    const cronSecret = headersList.get('x-cron-secret');
-
-    // Log or use the host as needed
-    console.log('Request from host:', host);
-
-    if (cronSecret) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get all active projects
+    // Fetch all projects' domains
     const projects = await prisma.project.findMany({
-      where: {
-        deletedAt: null,
-      },
       select: {
         id: true,
         domain: true,
       },
     });
 
-    const results = await Promise.all(
-      projects.map(async (project) => {
-        try {
-          const vtResponse = await checkDomain(project.domain);
-          const analysisResults = vtResponse.data.attributes.last_analysis_results;
+    for (const project of projects) {
+      try {
+        const response = await checkDomain(project.domain);
+        console.log(`VirusTotal results for ${project.domain}:`, response);
+        const results = Object.values(response.data.attributes.last_analysis_results);
+        console.log(`Results for ${project.domain}:`, results);
 
-          // Find results that indicate issues
-          const issueResults = Object.entries(analysisResults)
-            .filter(([_, result]: [string, any]) => isIssue(result))
-            .map(([engineName, result]: [string, any]) => ({
-              projectId: project.id,
-              engineName,
+        for (const result of results) {
+          // Assume you process the response here
+          await prisma.result.upsert({
+            where: {
+              projectId_engineName: {
+                projectId: project.id,
+                engineName: result.engine_name,
+              },
+            },
+            update: {
               result: result.result,
-              category: result.category || null,
-              method: result.method || null,
-            }));
-
-          // Store results in database
-          if (issueResults.length > 0) {
-            await prisma.result.createMany({
-              data: issueResults,
-            });
-          }
-
-          return {
-            domain: project.domain,
-            issuesCount: issueResults.length,
-            issues: issueResults,
-          };
-        } catch (error) {
-          console.error(`Error processing domain ${project.domain}:`, error);
-          return {
-            domain: project.domain,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          };
+            },
+            create: {
+              projectId: project.id,
+              engineName: result.engine_name,
+              result: result.result,
+              category: result.category,
+              method: result.method,
+            },
+          });
         }
-      })
-    );
+      } catch (error) {
+        console.error(`Error checking domain ${project.domain}:`, error);
+      }
+    }
 
-    return NextResponse.json({ results });
+    return NextResponse.json({ message: 'Domain check completed' }, { status: 200 });
   } catch (error) {
-    console.error('Cron job error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Something wrong with trigger check' },
+      { status: 500 }
+    );
   }
 }

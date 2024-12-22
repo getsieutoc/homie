@@ -1,13 +1,13 @@
 import CredentialProvider from 'next-auth/providers/credentials';
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
-import { prisma, PrismaClient } from '@/lib/prisma-client';
+import { prisma, PrismaClient } from '@/lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { userIncludes } from '@/lib/rich-includes';
+import { MembershipStatus } from '@prisma/client';
 import authConfig from '@/auth.config';
 import NextAuth from 'next-auth';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import { MembershipStatus } from '@prisma/client';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,

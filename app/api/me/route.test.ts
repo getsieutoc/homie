@@ -22,7 +22,7 @@ const mockFindUnique = vi
   );
 
 // Mock the entire prisma client
-vi.mock('@/lib/prisma-client', () => ({
+vi.mock('@/lib/prisma', () => ({
   prisma: {
     user: {
       findUnique: (...args: any[]) => mockFindUnique(...args),

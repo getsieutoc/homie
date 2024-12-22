@@ -8,11 +8,11 @@ declare global {
 
 const omitConfig = {
   user: {
-    hashedPassword: true
+    hashedPassword: true,
   },
   apiKey: {
-    hashedSecretKey: true
-  }
+    hashedSecretKey: true,
+  },
 } satisfies Prisma.GlobalOmitConfig;
 
 const prismaClientSingleton = () => {

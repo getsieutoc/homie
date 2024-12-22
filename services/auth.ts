@@ -2,16 +2,13 @@
 
 import { MembershipRole, MembershipStatus } from '@prisma/client';
 import { MIN_PASSWORD_LENGTH } from '@/lib/constants';
-import { prisma } from '@/lib/prisma-client';
+import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 
 const saltRounds = 12;
 
-export const signup = async (credentials: {
-  email: string;
-  password: string;
-}) => {
+export const signup = async (credentials: { email: string; password: string }) => {
   const parsedCredentials = z
     .object({
       email: z.string().email(),

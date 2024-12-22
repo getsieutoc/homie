@@ -1,7 +1,7 @@
 import { beforeEach } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 
-import { ExtendedPrismaClient } from '../prisma-client';
+import { ExtendedPrismaClient } from '../prisma';
 
 beforeEach(() => {
   mockReset(prisma);
