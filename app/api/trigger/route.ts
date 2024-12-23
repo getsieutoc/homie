@@ -1,16 +1,22 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { checkDomain } from '@/services/virustotal';
+import { IS_PRODUCTION } from '@/lib/constants';
+import { prisma } from '@/lib/prisma';
 
-export async function POST(req: NextApiRequest) {
-  // Check the trigger source
-  // if (req.headers['trigger-source'] !== process.env.TRIGGER_URL) {
-  //   return NextResponse.json({ error: 'Forbidden' });
-  // }
+export async function POST(req: NextRequest) {
+  const secret = req.headers.get('x-secret');
+  const origin = req.headers.get('origin');
+
+  if (!secret || secret !== process.env.TRIGGER_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!IS_PRODUCTION) {
+    console.log('Received  origin:', origin);
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
 
   try {
-    // Fetch all projects' domains
     const projects = await prisma.project.findMany({
       select: {
         id: true,
@@ -19,35 +25,31 @@ export async function POST(req: NextApiRequest) {
     });
 
     for (const project of projects) {
-      try {
-        const response = await checkDomain(project.domain);
-        console.log(`VirusTotal results for ${project.domain}:`, response);
-        const results = Object.values(response.data.attributes.last_analysis_results);
-        console.log(`Results for ${project.domain}:`, results);
+      const response = await checkDomain(project.domain);
 
-        for (const result of results) {
-          // Assume you process the response here
-          await prisma.result.upsert({
-            where: {
-              projectId_engineName: {
-                projectId: project.id,
-                engineName: result.engine_name,
-              },
-            },
-            update: {
-              result: result.result,
-            },
-            create: {
+      const results = Object.values(response.data.attributes.last_analysis_results);
+
+      for (const result of results) {
+        await prisma.result.upsert({
+          where: {
+            projectId_engineName: {
               projectId: project.id,
               engineName: result.engine_name,
-              result: result.result,
-              category: result.category,
-              method: result.method,
             },
-          });
-        }
-      } catch (error) {
-        console.error(`Error checking domain ${project.domain}:`, error);
+          },
+          update: {
+            category: result.category,
+            method: result.method,
+            result: result.result,
+          },
+          create: {
+            projectId: project.id,
+            engineName: result.engine_name,
+            result: result.result,
+            category: result.category,
+            method: result.method,
+          },
+        });
       }
     }
 

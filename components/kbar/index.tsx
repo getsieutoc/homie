@@ -1,15 +1,9 @@
 'use client';
 
-import {
-  KBarAnimator,
-  KBarPortal,
-  KBarPositioner,
-  KBarProvider,
-  KBarSearch
-} from 'kbar';
-import { navItems } from '@/constants/data';
-import { useRouter } from 'next/navigation';
+import { KBarAnimator, KBarPortal, KBarPositioner, KBarProvider, KBarSearch } from 'kbar';
 import { type ReactNode, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { navItems } from '@/lib/constants';
 
 import RenderResults from './render-result';
 import useThemeSwitching from './use-theme-switching';
@@ -35,7 +29,7 @@ export const KBar = ({ children }: { children: ReactNode }) => {
                 keywords: navItem.title.toLowerCase(),
                 section: 'Navigation',
                 subtitle: `Go to ${navItem.title}`,
-                perform: () => navigateTo(navItem.url)
+                perform: () => navigateTo(navItem.url),
               }
             : null;
 
@@ -48,7 +42,7 @@ export const KBar = ({ children }: { children: ReactNode }) => {
             keywords: childItem.title.toLowerCase(),
             section: navItem.title,
             subtitle: `Go to ${childItem.title}`,
-            perform: () => navigateTo(childItem.url)
+            perform: () => navigateTo(childItem.url),
           })) ?? [];
 
         // Return only valid actions (ignoring null base actions for containers)

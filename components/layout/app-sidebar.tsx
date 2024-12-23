@@ -3,7 +3,7 @@
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger
+  CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
   Sidebar,
@@ -27,10 +27,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarRail
+  SidebarRail,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { navItems } from '@/constants/data';
 import {
   BadgeCheck,
   Bell,
@@ -38,8 +36,10 @@ import {
   ChevronsUpDown,
   CreditCard,
   GalleryVerticalEnd,
-  LogOut
+  LogOut,
 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { navItems } from '@/lib/constants';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
@@ -49,7 +49,7 @@ import { Icons } from '../icons';
 export const company = {
   name: 'Acme Inc',
   logo: GalleryVerticalEnd,
-  plan: 'Enterprise'
+  plan: 'Enterprise',
 };
 
 export const AppSidebar = () => {
@@ -148,21 +148,14 @@ export const AppSidebar = () => {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage
-                      src={user?.image || ''}
-                      alt={user?.name || ''}
-                    />
+                    <AvatarImage src={user?.image || ''} alt={user?.name || ''} />
                     <AvatarFallback className="rounded-lg">
                       {user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      {user?.name || ''}
-                    </span>
-                    <span className="truncate text-xs">
-                      {user?.email || ''}
-                    </span>
+                    <span className="truncate font-semibold">{user?.name || ''}</span>
+                    <span className="truncate text-xs">{user?.email || ''}</span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -176,22 +169,14 @@ export const AppSidebar = () => {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage
-                        src={user?.image || ''}
-                        alt={user?.name || ''}
-                      />
+                      <AvatarImage src={user?.image || ''} alt={user?.name || ''} />
                       <AvatarFallback className="rounded-lg">
                         {user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {user?.name || ''}
-                      </span>
-                      <span className="truncate text-xs">
-                        {' '}
-                        {user?.email || ''}
-                      </span>
+                      <span className="truncate font-semibold">{user?.name || ''}</span>
+                      <span className="truncate text-xs"> {user?.email || ''}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
