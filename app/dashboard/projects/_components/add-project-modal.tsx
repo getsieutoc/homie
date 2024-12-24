@@ -18,11 +18,13 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { upsertProject } from '@/services/projects';
+import { checkDomain } from '@/services/virustotal';
+import { upsertResults } from '@/services/results';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
 import { useForm } from '@/hooks';
+import { useState } from 'react';
 import * as z from 'zod';
 
 const cleanDomain = (domain: string) => {
@@ -53,11 +55,22 @@ export function AddProjectModal() {
   });
 
   const onSubmit = async (inputs: FormInputs) => {
-    const response = await upsertProject(inputs);
+    const project = await upsertProject(inputs);
 
-    if (response) {
+    if (project) {
       setOpen(false);
       form.reset();
+
+      const vtResponse = await checkDomain(project.domain);
+
+      const analysisResults = Object.values(
+        vtResponse.data.attributes.last_analysis_results
+      );
+
+      await upsertResults({
+        results: analysisResults,
+        projectId: project.id,
+      });
     }
   };
 
