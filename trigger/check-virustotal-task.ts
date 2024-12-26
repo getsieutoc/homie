@@ -1,14 +1,11 @@
 import { logger, schedules, wait } from '@trigger.dev/sdk/v3';
+import { Keys } from '@/lib/constants';
 
 export const checkVirusTotalTask = schedules.task({
-  id: 'check-virustotal-task',
-  // Every hour
-  cron: '0 * * * *',
+  id: Keys.CHECK_VIRUSTOTAL_TASK,
   // Set an optional maxDuration to prevent tasks from running indefinitely
   maxDuration: 300, // Stop executing after 300 secs (5 mins) of compute
   run: async (payload) => {
-    // The payload contains the last run timestamp that you can use to check if this is the first run
-    // And calculate the time since the last run
     const distanceInMs =
       payload.timestamp.getTime() - (payload.lastTimestamp ?? new Date()).getTime();
 

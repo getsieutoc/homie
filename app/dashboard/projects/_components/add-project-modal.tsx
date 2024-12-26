@@ -55,22 +55,25 @@ export function AddProjectModal() {
   });
 
   const onSubmit = async (inputs: FormInputs) => {
-    const project = await upsertProject(inputs);
+    const { project } = await upsertProject({ ...inputs, cron: '0 * * * *' });
 
     if (project) {
       setOpen(false);
       form.reset();
 
-      const vtResponse = await checkDomain(project.domain);
+      try {
+        const vtResponse = await checkDomain(project.domain);
+        const analysisResults = Object.values(
+          vtResponse.data.attributes.last_analysis_results
+        );
 
-      const analysisResults = Object.values(
-        vtResponse.data.attributes.last_analysis_results
-      );
-
-      await upsertResults({
-        results: analysisResults,
-        projectId: project.id,
-      });
+        await upsertResults({
+          results: analysisResults,
+          projectId: project.id,
+        });
+      } catch (error) {
+        console.error('Error performing initial VirusTotal check:', error);
+      }
     }
   };
 

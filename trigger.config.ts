@@ -1,11 +1,11 @@
 import { defineConfig } from '@trigger.dev/sdk/v3';
 
 export default defineConfig({
-  project: 'proj_gydigykxylcuuieqiven',
+  project: process.env.TRIGGER_PROJECT_ID!,
   runtime: 'node',
   logLevel: 'log',
-  // Set the maxDuration to 300 seconds for all tasks. See https://trigger.dev/docs/runs/max-duration
-  // maxDuration: 300,
+  maxDuration: 300,
+  dirs: ['trigger'],
   retries: {
     enabledInDev: true,
     default: {
@@ -16,5 +16,4 @@ export default defineConfig({
       randomize: true,
     },
   },
-  dirs: ['trigger'],
 });

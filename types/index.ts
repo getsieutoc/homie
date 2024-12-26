@@ -5,6 +5,12 @@ import { ReactNode } from 'react';
 export * from '@prisma/client';
 
 export * from '@/lib/rich-includes';
+/**
+ * @T is the interface we want to reuse.
+ * @R is the part we want to force.
+ * The rest of T will be optional.
+ */
+export type OptionalExcept<T, R extends keyof T> = Partial<T> & Pick<T, R>;
 
 export enum HttpMethod {
   CONNECT = 'CONNECT',

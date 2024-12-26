@@ -4,6 +4,10 @@ export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 export const MIN_PASSWORD_LENGTH = 8;
 
+export const Keys = {
+  CHECK_VIRUSTOTAL_TASK: 'check-virustotal-task',
+} as const;
+
 export const navItems: NavItem[] = [
   {
     title: 'Dashboard',
