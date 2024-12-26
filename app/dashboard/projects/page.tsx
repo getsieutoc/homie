@@ -1,10 +1,11 @@
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
-import { getProjects } from '@/services/projects';
+import { ResultStats, getResultStats } from '@/services/results';
 import PageContainer from '@/components/layout/page-container';
 import { Separator } from '@/components/ui/separator';
+import { getProjects } from '@/services/projects';
 import { Heading } from '@/components/ui/heading';
-import { SearchParams } from 'nuqs/parsers';
+import { type SearchParams } from 'nuqs/parsers';
 import { Suspense } from 'react';
 
 import ProjectTableAction from './_components/project-table/project-table-action';
@@ -41,6 +42,15 @@ export default async function ProjectsPage({ searchParams }: pageProps) {
 
   const { projects, schedules } = await getProjects(filters);
 
+  const statResponses = await Promise.all(
+    projects.map(async ({ id: projectId }) => {
+      const stats = await getResultStats({ projectId });
+      return [projectId, stats];
+    })
+  );
+
+  const resultStats = Object.fromEntries(statResponses) as Record<string, ResultStats>;
+
   return (
     <PageContainer>
       <div className="space-y-4">
@@ -56,7 +66,7 @@ export default async function ProjectsPage({ searchParams }: pageProps) {
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
-          <ProjectListing projects={projects} schedules={schedules} />
+          <ProjectListing projects={projects} schedules={schedules} stats={resultStats} />
         </Suspense>
       </div>
     </PageContainer>

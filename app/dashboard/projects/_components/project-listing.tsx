@@ -1,27 +1,27 @@
 'use client';
 
 import { DataTable } from '@/components/ui/table/data-table';
-import { format } from 'date-fns';
-import { Project } from '@/types';
+import { type ResultStats } from '@/services/results';
 import { HelpCircle } from 'lucide-react';
+import { format } from 'date-fns';
+import { type Project } from '@/types';
 
-import { CellAction } from './project-table/cell-action';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
+
+import { CellAction } from './project-table/cell-action';
 
 type Props = {
   projects: Project[];
   schedules: any[];
+  stats?: Record<string, ResultStats>;
 };
 
-export default async function ProjectListing({ projects, schedules }: Props) {
-  console.log('### schedules: ', schedules);
-
+export default async function ProjectListing({ projects, schedules, stats }: Props) {
   return (
     <DataTable
       columns={[
@@ -69,6 +69,24 @@ export default async function ProjectListing({ projects, schedules }: Props) {
               return <div>{format(foundSchedule.nextRun, 'dd.MM.yyyy HH:mm')}</div>;
             }
             return '-';
+          },
+        },
+        {
+          header: 'Status',
+          cell: ({ row }) => {
+            if (!stats) return '-';
+
+            const { id } = row.original;
+            const currentStats = stats[id];
+            return (
+              <div className="flex gap-x-2">
+                {currentStats.map((stat) => (
+                  <div key={stat.result}>
+                    {stat.result}: {stat._count.result}
+                  </div>
+                ))}
+              </div>
+            );
           },
         },
         {

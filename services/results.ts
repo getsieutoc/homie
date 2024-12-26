@@ -5,6 +5,22 @@ import { type VTResult } from '@/types';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
 
+export type GetResultStats = {
+  projectId: string;
+};
+
+export type ResultStats = ReturnType<typeof getResultStats>;
+
+export const getResultStats = async ({ projectId }: GetResultStats) => {
+  return await prisma.result.groupBy({
+    by: ['result'],
+    where: { projectId },
+    _count: {
+      result: true,
+    },
+  });
+};
+
 export type UpsertResultsData = {
   results: VTResult[];
   projectId: string;
