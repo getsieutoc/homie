@@ -26,12 +26,7 @@ type ResultQuery = {
   take?: number;
 };
 
-export const getResults = async ({
-  where,
-  orderBy = {},
-  skip = 0,
-  take = 10,
-}: ResultQuery) => {
+export const getResults = async ({ where, orderBy = {}, skip, take }: ResultQuery) => {
   return await prisma.result.findMany({
     where,
     orderBy,
