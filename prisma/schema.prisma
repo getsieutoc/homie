@@ -140,17 +140,19 @@ model ApiKey {
 }
 
 model Result {
-  id         String    @id @default(cuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now()) @updatedAt
-  disputedAt DateTime? // when dispute was sent
-  resolvedAt DateTime? // when issue was resolved
-  projectId  String
-  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  engineName String
-  result     String // clean, malicious, suspicious, etc.
-  category   String? // type of threat if malicious
-  method     String? // detection method used
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now()) @updatedAt
+  disputedAt   DateTime? // when dispute was sent
+  resolvedAt   DateTime? // when issue was resolved
+  projectId    String
+  project      Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  lastMessage  String?
+  disputeCount Int       @default(0)
+  engineName   String // reuse from virustotal
+  result       String // clean, malicious, suspicious, etc.
+  category     String? // type of threat if malicious
+  method       String? // detection method used
 
   @@unique([projectId, engineName])
 }

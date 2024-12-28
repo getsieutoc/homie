@@ -1,5 +1,10 @@
+import { getResultStats } from '@/services/results';
 import { Icons } from '@/components/icons';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+
+export { type SearchParams } from 'nuqs/parsers';
+
+export type Stats = Awaited<ReturnType<typeof getResultStats>>;
 
 // why it does not effect?
 export * from '@prisma/client';

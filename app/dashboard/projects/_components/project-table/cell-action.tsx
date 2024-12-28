@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, MoreHorizontal, Trash, SendHorizontal } from 'lucide-react';
 import { type Project } from '@/types';
 import { useState } from 'react';
 import { deleteProject } from '@/services/projects';
@@ -52,6 +52,9 @@ export const CellAction = ({ data }: Props) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
+          <DropdownMenuItem>
+            <SendHorizontal className="mr-2 h-4 w-4" /> Send Dispute
+          </DropdownMenuItem>
           <DropdownMenuItem disabled>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

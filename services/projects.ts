@@ -1,12 +1,20 @@
 'use server';
 
 import { Prisma, type Project } from '@prisma/client';
-import { schedules } from '@trigger.dev/sdk/v3';
+import { schedules as triggerSchedules } from '@trigger.dev/sdk/v3';
 import { type OptionalExcept } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
 import { Keys } from '@/lib/constants';
+
+export const getProjectById = async (id: string) => {
+  const project = await prisma.project.findUniqueOrThrow({
+    where: { id },
+  });
+
+  return { project };
+};
 
 export type ProjectFilters = {
   page?: number;
@@ -55,12 +63,11 @@ export const getProjects = async (filters?: ProjectFilters) => {
   const scheduleIds = projects.map((o) => o.scheduleId).filter((id) => !!id) as string[];
 
   const scheduleResponses = await Promise.all(
-    scheduleIds.map((scheduleId) => schedules.retrieve(scheduleId))
+    scheduleIds.map((scheduleId) => triggerSchedules.retrieve(scheduleId))
   );
 
   return {
     projects,
-    projectsNumber: projects.length,
     schedules: scheduleResponses,
   };
 };

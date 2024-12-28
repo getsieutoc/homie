@@ -1,17 +1,15 @@
 'use server';
 
+import { type VTResult, Prisma } from '@/types';
 import { revalidatePath } from 'next/cache';
-import { type VTResult } from '@/types';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
 
-export type GetResultStats = {
+type StatOptions = {
   projectId: string;
 };
 
-export type ResultStats = ReturnType<typeof getResultStats>;
-
-export const getResultStats = async ({ projectId }: GetResultStats) => {
+export const getResultStats = async ({ projectId }: StatOptions) => {
   return await prisma.result.groupBy({
     by: ['result'],
     where: { projectId },
@@ -21,7 +19,28 @@ export const getResultStats = async ({ projectId }: GetResultStats) => {
   });
 };
 
-export type UpsertResultsData = {
+type ResultQuery = {
+  where: Prisma.ResultWhereInput;
+  orderBy?: Prisma.ResultFindManyArgs['orderBy'];
+  skip?: number;
+  take?: number;
+};
+
+export const getResults = async ({
+  where,
+  orderBy = {},
+  skip = 0,
+  take = 10,
+}: ResultQuery) => {
+  return await prisma.result.findMany({
+    where,
+    orderBy,
+    skip,
+    take,
+  });
+};
+
+type UpsertResultsData = {
   results: VTResult[];
   projectId: string;
 };

@@ -1,16 +1,17 @@
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
-import { ResultStats, getResultStats } from '@/services/results';
 import PageContainer from '@/components/layout/page-container';
 import { Separator } from '@/components/ui/separator';
+import { getResultStats } from '@/services/results';
 import { getProjects } from '@/services/projects';
 import { Heading } from '@/components/ui/heading';
 import { type SearchParams } from 'nuqs/parsers';
+import { type Stats } from '@/types';
 import { Suspense } from 'react';
 
 import ProjectTableAction from './_components/project-table/project-table-action';
-import ProjectListing from './_components/project-listing';
 import { AddProjectModal } from './_components/add-project-modal';
+import { ProjectListing } from './_components/project-listing';
 
 export const metadata = {
   title: 'Projects | Homie',
@@ -49,7 +50,7 @@ export default async function ProjectsPage({ searchParams }: pageProps) {
     })
   );
 
-  const resultStats = Object.fromEntries(statResponses) as Record<string, ResultStats>;
+  const resultStats = Object.fromEntries(statResponses) as Record<string, Stats>;
 
   return (
     <PageContainer>

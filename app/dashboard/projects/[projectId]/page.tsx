@@ -1,20 +1,30 @@
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
+import { getProjectById } from '@/services/projects';
 import { Suspense } from 'react';
-import ProductViewPage from '../_components/product-view-page';
+import { type Metadata } from 'next';
 
-export const metadata = {
-  title: 'Dashboard : Product View'
-};
+import { ProjectView } from './project-view';
 
-type PageProps = { params: { productId: string } };
+type PageProps = { params: { projectId: string } };
 
-export default function Page({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { project } = await getProjectById(params.projectId);
+
+  return {
+    title: `Project: ${project.domain}`,
+    description: project.description || 'No description',
+  };
+}
+
+export default async function SingleProjectPage({ params }: PageProps) {
+  const { project } = await getProjectById(params.projectId);
+
   return (
     <PageContainer scrollable>
       <div className="flex-1 space-y-4">
         <Suspense fallback={<FormCardSkeleton />}>
-          <ProductViewPage productId={params.productId} />
+          <ProjectView project={project} />
         </Suspense>
       </div>
     </PageContainer>
