@@ -82,3 +82,29 @@ export const upsertResults = async (data: UpsertResultsData) => {
     },
   });
 };
+
+export type UpdateResultData = {
+  projectId: string;
+  engineName: string;
+  lastMessage: string;
+};
+
+export const updateResult = async (data: UpdateResultData) => {
+  const { session } = await getAuth();
+
+  if (!session) {
+    throw new Error('Unauthorized');
+  }
+
+  return await prisma.result.update({
+    where: {
+      projectId_engineName: {
+        projectId: data.projectId,
+        engineName: data.engineName,
+      },
+    },
+    data: {
+      lastMessage: data.lastMessage,
+    },
+  });
+};

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function SingleProjectPage({ params }: PageProps) {
-  const { project } = await getProjectById(params.projectId);
+  const { project, schedule } = await getProjectById(params.projectId);
   const stats = await getResultStats({ projectId: params.projectId });
 
   // Get all unique result values from stats
@@ -47,6 +47,7 @@ export default async function SingleProjectPage({ params }: PageProps) {
         <Suspense fallback={<FormCardSkeleton />}>
           <ProjectView
             project={project}
+            schedule={schedule}
             stats={stats}
             detailedResults={detailedResults}
           />

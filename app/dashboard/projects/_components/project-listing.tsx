@@ -1,27 +1,25 @@
 'use client';
 
-import { DataTable } from '@/components/ui/table/data-table';
-import { type Stats, type Project } from '@/types';
-import { HelpCircle, Loader2 } from 'lucide-react';
-import { format } from 'date-fns';
-
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { type Stats, type Project, type TriggerSchedule } from '@/types';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { DataTable } from '@/components/ui/table/data-table';
+import { HelpCircle, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
+import { useState } from 'react';
 
 import { CellAction } from './project-table/cell-action';
 import { ResultStats } from './result-stats';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 type Props = {
   projects: Project[];
-  schedules: any[];
+  schedules: TriggerSchedule[];
   stats: Record<string, Stats>;
 };
 
@@ -82,7 +80,8 @@ export const ProjectListing = ({ projects, schedules, stats }: Props) => {
             cell: ({ row }) => {
               const value = row.getValue<string>('scheduleId');
               const foundSchedule = schedules.find((o) => o.id === value);
-              if (foundSchedule) {
+
+              if (foundSchedule && foundSchedule.nextRun) {
                 return <div>{format(foundSchedule.nextRun, 'dd.MM.yyyy HH:mm')}</div>;
               }
               return '-';

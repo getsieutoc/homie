@@ -1,4 +1,5 @@
-import { type Project } from '@prisma/client';
+'use client';
+
 import {
   Card,
   CardContent,
@@ -6,8 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import {
   CalendarIcon,
   ClockIcon,
@@ -18,9 +17,22 @@ import {
   CircleHelp,
   AlertCircle,
 } from 'lucide-react';
-import { type Stats, type Result } from '@/types';
-import { Separator } from '@/components/ui/separator';
+import {
+  type Stats,
+  type Result,
+  type TriggerSchedule,
+  type EmailResponse,
+  type Project,
+  HttpMethod,
+} from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { updateResult } from '@/services/results';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { fetcher } from '@/lib/utils';
+import { format } from 'date-fns';
 
 type DetailedResults = {
   type: string;
@@ -29,13 +41,40 @@ type DetailedResults = {
 
 export type Props = {
   project: Project;
+  schedule: TriggerSchedule;
   stats?: Stats;
   detailedResults?: DetailedResults;
 };
 
-const ResultSection = ({ type, items }: DetailedResults[number]) => {
+const ResultSection = ({
+  type,
+  items,
+  project,
+}: DetailedResults[number] & { project: Project }) => {
   const isMalicious = ['malicious', 'suspicious', 'phishing'].includes(type);
   const isClean = type === 'clean';
+
+  const generateEmail = async (result: Result) => {
+    try {
+      const emailRes = await fetcher<EmailResponse>('/api/ai/email', {
+        method: HttpMethod.POST,
+        body: JSON.stringify({
+          result: result.result,
+          engineName: result.engineName,
+          resultCategory: result.category || 'malicious',
+          projectDomain: project.domain,
+        }),
+      });
+
+      await updateResult({
+        projectId: result.projectId,
+        engineName: result.engineName,
+        lastMessage: JSON.stringify(emailRes),
+      });
+    } catch (error) {
+      console.error('Error generating email:', error);
+    }
+  };
 
   return (
     <Card className={isMalicious ? 'md:col-span-2' : ''}>
@@ -100,6 +139,26 @@ const ResultSection = ({ type, items }: DetailedResults[number]) => {
                           Method: {result.method}
                         </p>
                       )}
+
+                      {isMalicious && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => generateEmail(result)}
+                        >
+                          Generate Email
+                        </Button>
+                      )}
+
+                      {result.lastMessage && (
+                        <div className="mt-2 space-y-1 rounded-md bg-muted p-2">
+                          <p className="text-xs font-medium">Generated Email:</p>
+                          <p className="text-xs text-muted-foreground">
+                            {result.lastMessage}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -112,7 +171,7 @@ const ResultSection = ({ type, items }: DetailedResults[number]) => {
   );
 };
 
-export function ProjectView({ project, stats, detailedResults }: Props) {
+export function ProjectView({ project, schedule, stats, detailedResults }: Props) {
   return (
     <Card className="w-full">
       <CardHeader className="pb-4">
@@ -162,8 +221,10 @@ export function ProjectView({ project, stats, detailedResults }: Props) {
           <div className="flex items-center gap-2">
             <TimerIcon className="h-4 w-4 text-muted-foreground" />
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Schedule</Label>
-              <p className="font-mono text-sm font-medium">{project.cron}</p>
+              <Label className="text-xs text-muted-foreground">Next run:</Label>
+              <p className="font-mono text-sm font-medium">
+                {format(schedule.nextRun!, 'dd.MM.yyyy HH:mm')}
+              </p>
             </div>
           </div>
         </div>
@@ -179,6 +240,7 @@ export function ProjectView({ project, stats, detailedResults }: Props) {
                     key={result.type}
                     type={result.type}
                     items={result.items}
+                    project={project}
                   />
                 ))}
               </div>

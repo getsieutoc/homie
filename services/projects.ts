@@ -20,7 +20,9 @@ export const getProjectById = async (id: string) => {
     where: { id, tenantId },
   });
 
-  return { project };
+  const schedule = await triggerSchedules.retrieve(project.scheduleId!);
+
+  return { project, schedule };
 };
 
 export type ProjectFilters = {

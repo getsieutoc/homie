@@ -1,15 +1,26 @@
 import { getResultStats } from '@/services/results';
+import { getProjects } from '@/services/projects';
 import { Icons } from '@/components/icons';
 import { type ReactNode } from 'react';
 
 export { type SearchParams } from 'nuqs/parsers';
 
-export type Stats = Awaited<ReturnType<typeof getResultStats>>;
-
 // why it does not effect?
 export * from '@prisma/client';
 
 export * from '@/lib/rich-includes';
+
+export type Stats = Awaited<ReturnType<typeof getResultStats>>;
+
+export type TriggerSchedule = Awaited<
+  ReturnType<typeof getProjects>
+>['schedules'][number];
+
+export type EmailResponse = {
+  subject: string;
+  content: string;
+};
+
 /**
  * @T is the interface we want to reuse.
  * @R is the part we want to force.
