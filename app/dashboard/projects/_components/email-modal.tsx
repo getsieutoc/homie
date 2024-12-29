@@ -17,6 +17,8 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { Send, Sparkles } from 'lucide-react';
 import { fetcher } from '@/lib/utils';
+import { readStreamableValue } from 'ai/rsc';
+import { generateEmail } from '@/services/ai';
 
 export type Props = {
   isOpen: boolean;
@@ -34,6 +36,9 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [generation, setGeneration] = useState<string>('');
+  console.log('generation', generation);
+
   const lastMessage = result.lastMessage
     ? (JSON.parse(result.lastMessage) as EmailFormValues)
     : null;
@@ -50,22 +55,23 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   const handleGenerate = async () => {
     try {
       setIsLoading(true);
-      const response = await fetcher('/api/ai/email', {
-        method: HttpMethod.POST,
-        body: JSON.stringify({
-          result: result.result,
-          engineName: result.engineName,
-          resultCategory: result.category || 'malicious',
-          projectDomain: project.domain,
-        }),
+
+      const { object } = await generateEmail({
+        result: result.result,
+        engineName: result.engineName,
+        resultCategory: result.category || 'malicious',
+        projectDomain: project.domain,
       });
 
-      if (response) {
-        console.log({ response });
+      for await (const partialObject of readStreamableValue(object)) {
+        if (partialObject) {
+          setGeneration(JSON.stringify(partialObject.notifications, null, 2));
+        }
       }
+
+      setIsLoading(false);
     } catch (error) {
       console.error('Error generating email:', error);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -140,6 +146,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
                 className="h-[200px]"
                 {...form.register('content')}
               />
+              {generation}
             </div>
           </div>
 
