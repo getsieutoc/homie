@@ -23,7 +23,16 @@ export default async function SingleProjectPage({ params }: PageProps) {
   const stats = await getResultStats({ projectId: params.projectId });
 
   // Get all unique result values from stats
-  const resultTypes = stats.map((s) => s.result);
+  const resultTypes = stats
+    .map((s) => s.result)
+    .sort((a, b) => {
+      if (a === 'unrated') return 1;
+      if (b === 'unrated') return -1;
+      if (a === 'clean') return 1;
+      if (b === 'clean') return -1;
+      return a.localeCompare(b);
+    });
+  console.log({ resultTypes });
 
   // Fetch detailed results for each result type
   const detailedResults = await Promise.all(

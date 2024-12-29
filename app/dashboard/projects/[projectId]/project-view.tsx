@@ -15,24 +15,17 @@ import {
   CircleCheckBig,
   AlertTriangle,
   CircleHelp,
-  AlertCircle,
 } from 'lucide-react';
-import {
-  type Stats,
-  type Result,
-  type TriggerSchedule,
-  type EmailResponse,
-  type Project,
-  HttpMethod,
-} from '@/types';
+import { type Stats, type Result, type TriggerSchedule, type Project } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { updateResult } from '@/services/results';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { fetcher } from '@/lib/utils';
+
 import { format } from 'date-fns';
+import { useState } from 'react';
+import { EmailModal } from '../_components/email-modal';
 
 type DetailedResults = {
   type: string;
@@ -53,31 +46,16 @@ const ResultSection = ({
 }: DetailedResults[number] & { project: Project }) => {
   const isMalicious = ['malicious', 'suspicious', 'phishing'].includes(type);
   const isClean = type === 'clean';
+  const [selectedResult, setSelectedResult] = useState<Result | null>(null);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
-  const generateEmail = async (result: Result) => {
-    try {
-      const emailRes = await fetcher<EmailResponse>('/api/ai/email', {
-        method: HttpMethod.POST,
-        body: JSON.stringify({
-          result: result.result,
-          engineName: result.engineName,
-          resultCategory: result.category || 'malicious',
-          projectDomain: project.domain,
-        }),
-      });
-
-      await updateResult({
-        projectId: result.projectId,
-        engineName: result.engineName,
-        lastMessage: JSON.stringify(emailRes),
-      });
-    } catch (error) {
-      console.error('Error generating email:', error);
-    }
+  const handleGenerateEmail = (result: Result) => {
+    setSelectedResult(result);
+    setIsEmailModalOpen(true);
   };
 
   return (
-    <Card className={isMalicious ? 'md:col-span-2' : ''}>
+    <Card>
       <CardHeader className="pb-2">
         <CardTitle
           className={`flex items-center gap-2 text-sm font-medium ${
@@ -113,15 +91,6 @@ const ResultSection = ({
               <div className="space-y-3">
                 {items.map((result) => (
                   <div key={result.engineName} className="flex items-start gap-2">
-                    <AlertCircle
-                      className={`mt-0.5 h-4 w-4 shrink-0 ${
-                        isClean
-                          ? 'text-green-600'
-                          : isMalicious
-                          ? 'text-red-600'
-                          : 'text-gray-600'
-                      }`}
-                    />
                     <div className="space-y-1">
                       <p className="text-sm font-medium">{result.engineName}</p>
                       <div className="flex gap-2">
@@ -142,12 +111,11 @@ const ResultSection = ({
 
                       {isMalicious && (
                         <Button
-                          variant="outline"
+                          onClick={() => handleGenerateEmail(result)}
+                          className="ml-auto"
                           size="sm"
-                          className="mt-2"
-                          onClick={() => generateEmail(result)}
                         >
-                          Generate Email
+                          Generate Dispute Email
                         </Button>
                       )}
 
@@ -167,30 +135,42 @@ const ResultSection = ({
           )}
         </div>
       </CardContent>
+      {selectedResult && (
+        <EmailModal
+          isOpen={isEmailModalOpen}
+          onClose={() => {
+            setIsEmailModalOpen(false);
+            setSelectedResult(null);
+          }}
+          result={selectedResult}
+          project={project}
+        />
+      )}
     </Card>
   );
 };
 
 export function ProjectView({ project, schedule, stats, detailedResults }: Props) {
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-4">
+    <div className="w-full">
+      <div className="pb-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <CardTitle className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Globe2Icon className="h-5 w-5" />
               {project.domain}
-            </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
+            </div>
+            <div className="text-sm text-muted-foreground">
               {project.description || 'No description provided'}
-            </CardDescription>
+            </div>
           </div>
           <Badge variant={!project.deletedAt ? 'default' : 'secondary'}>
             {!project.deletedAt ? 'Active' : 'Inactive'}
           </Badge>
         </div>
-      </CardHeader>
-      <CardContent className="grid gap-6">
+      </div>
+
+      <div className="grid gap-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-muted-foreground" />
@@ -233,8 +213,10 @@ export function ProjectView({ project, schedule, stats, detailedResults }: Props
           <>
             <Separator />
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">VirusTotal Results</h3>
-              <div className="grid gap-4 md:grid-cols-3">
+              <h3 className="text-lg font-medium">
+                Checking Results from Security Vendors
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2">
                 {detailedResults.map((result) => (
                   <ResultSection
                     key={result.type}
@@ -247,7 +229,7 @@ export function ProjectView({ project, schedule, stats, detailedResults }: Props
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

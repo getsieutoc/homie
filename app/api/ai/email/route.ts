@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SYSTEM_PROMPT } from '@/lib/constants';
 import { getOpenAIModel } from '@/lib/openai';
-import { generateObject } from 'ai';
+import { streamObject } from 'ai';
 import { z } from 'zod';
 
 export type Result = {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       - subject: A clear and concise subject line
       - content: ONLY the body of the email, do not include any subject line or other metadata in the content field`;
 
-    const { object } = await generateObject({
+    const stream = await streamObject({
       model: getOpenAIModel(),
       schema: z.object({
         subject: z.string().describe('The email subject line'),
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       seed: Date.now(),
     });
 
-    return NextResponse.json(object);
+    return new Response(stream);
   } catch (error) {
     console.error('Error generating email:', error);
     return NextResponse.json(
