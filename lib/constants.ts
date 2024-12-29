@@ -26,11 +26,19 @@ export const navItems: NavItem[] = [
     items: [], // No child items
   },
   {
+    title: 'Vendors',
+    url: '/dashboard/vendors',
+    icon: 'vendor',
+    shortcut: ['g', 'v'],
+    isActive: false,
+    isAdminOnly: true,
+    items: [], // No child items
+  },
+  {
     title: 'Settings',
     url: '#', // Placeholder as there is no direct link for the parent
     icon: 'settings',
     isActive: true,
-
     items: [
       {
         title: 'Profile',

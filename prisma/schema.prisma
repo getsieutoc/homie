@@ -89,6 +89,7 @@ model Tenant {
   deletedAt   DateTime?
   name        String
   projects    Project[]
+  vendors     Vendor[]
   memberships Membership[]
 }
 
@@ -155,4 +156,16 @@ model Result {
   method       String? // detection method used
 
   @@unique([projectId, engineName])
+}
+
+model Vendor {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+  tenantId  String?
+  tenant    Tenant?   @relation(fields: [tenantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  name      String    @unique
+  email     String?
+  url       String?
 }

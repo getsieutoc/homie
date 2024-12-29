@@ -21,6 +21,9 @@
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "lint-staged": {
     "**/*": [
       "prettier --write --ignore-unknown"
@@ -33,7 +36,7 @@
     "@dnd-kit/sortable": "8.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@hookform/resolvers": "3.3.2",
-    "@prisma/client": "6.0.1",
+    "@prisma/client": "6.1.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-alert-dialog": "1.0.5",
     "@radix-ui/react-avatar": "1.1.1",
@@ -63,6 +66,7 @@
     "class-variance-authority": "0.7.0",
     "clsx": "2.0.0",
     "cmdk": "1.0.0",
+    "csv-parse": "5.6.0",
     "date-fns": "2.30.0",
     "deepmerge": "4.3.1",
     "jotai": "2.10.3",
@@ -120,7 +124,7 @@
     "prettier": "3.0.3",
     "prettier-plugin-prisma": "5.0.0",
     "prettier-plugin-tailwindcss": "0.5.14",
-    "prisma": "6.0.1",
+    "prisma": "6.1.0",
     "rimraf": "6.0.1",
     "tsx": "4.19.2",
     "typescript": "5.2.2",

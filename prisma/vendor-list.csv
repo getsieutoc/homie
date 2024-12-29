@@ -1,0 +1,161 @@
+Engine,Email,URL
+0xSI_f33d,,
+360,kefu@360.cn,
+ADMINUSLabs,"info@adminuslabs.net, samples@adminus.net, falsepositive@adminuslabs.net",
+AILabs,aicc@monitorapp.com,
+AVG,,"http://www.avg.com/submit-sample, http://www.avg.com/us-en/whitelist"
+Abusix,support@abusix.com,
+Acronis,virustotal-falsepositive@acronis.com,
+AegisLab,support@aegislab.com,
+Ahnlab,"e-support@ahnlab.com, samples@ahnlab.com",
+AliCloud,antivirus@alibabacloud.comm,
+Alibaba,virustotal@list.alibaba-inc.com,
+AlienVault,otx-support@alienvault.com,
+AlphaMountain,support@alphamountain.ai,
+AlphaSOC,virustotal@alphasoc.com,
+Antivir (Avira),,https://www.avira.com/en/analysis/submit-url
+Antiy-AVL,avlsdk_support@antiy.cn,
+ArcSight Threat Intelligence,arcsight-virustotal@microfocus.com,
+Arcabit,vt.fp@arcabit.pl,
+AutoShun,info@autoshun.org,
+Avast,DL-Virus@gendigital.com,
+Baidu,"bav@baidu.com, gaoyingchun@baidu.com",
+Bfore.Ai PreCrime,,https://bfore.ai/support
+BitDefender,virus_submission@bitdefender.com,
+Bkav,"fpreport@bkav.com, bkav@bkav.com",
+Blueliv,,
+CINS Army,,http://cinsscore.com/#contact
+CMC Threat Intelligence,PSIRT@cmccybersecurity.com,
+CRDF,,https://threatcenter.crdf.fr/false_positive.html
+CSIS Security Group,abuse-reporting@csis.com,
+CTX (SaintSecurity),root@malwares.com,
+Certego,,https://www.certego.net/en/contatti/
+Chong Lua Dao,info@chongluadao.vn,
+ClamAV,,http://www.clamav.net/reports/fp
+Clean-MX,abuse@clean-mx.de,
+Cluster25,threatintel@cluster25.io,
+Criminal IP,support@aispera.com,
+CrowdStrike,VTscanner@crowdstrike.com,
+CyRadar,virustotal@cyradar.com,
+Cyan,virustotal@cyansecurity.com,
+Cybereason,vt-feedback@cybereason.com,
+Cyble,cyblevt_patnership@cyble.com,
+Cylance,cylancefilesubmit@blackberry.com,
+Cynet,soc@cynet.com,
+DNS8,dns8@layer8.pt,
+Deep Instinct,vt-fps-requests@deepinstinct.com,
+Dr.Web,vms@drweb.com,
+ESET,,https://support.eset.com/kb141/?page=content&id=SOLN141
+ESTsecurity,esrc@estsecurity.com,
+Elastic,,https://discuss.elastic.co/t/submitting-false-positives/232322
+EmergingThreats,,
+Emsisoft,"submit@emsisoft.com, fp@emsisoft.com",https://www.emsisoft.com/en/support/contact/
+Ermes,support-vt@ermes.company,
+F-Prot,viruslab@f-prot.com,
+F-Secure/WithSecure,"spyware-samples@f-secure.com, vsamples@f-secure.com",
+FireEye,virustotal@fireeye.com,
+Forcepoint ThreatSeeker,reviewmysite@forcepoint.com,
+Fortinet,,https://www.fortiguard.com/faq/classificationdispute http://www.fortinet.com/support/contact_support.html
+G-Data,,https://www.gdata.de/help/en/general/GeneralInformation/submitFileAppURL/
+Google (File Scanner),google-at-virustotal@google.com,
+Google Safebrowsing,,https://safebrowsing.google.com/safebrowsing/report_error/?hl=en
+GreenSnow,,https://greensnow.co/contact
+Gridinsoft,virus@gridinsoft.com,
+Hacksoft,virus@hacksoft.com.pe,
+Hauri,viruslab@hauri.co.kr,
+Heimdal Security,,
+Heimdal,report-vt@heimdalsecurity.com,
+Hoplite Industries,vt-info@hopliteindustries.com,
+Hunt.io Intelligence,k.lo@hunt.io,
+Huorong,seclab@huorong.cn,
+IPsum,"support@jiangmin.com, shaojia@jiangmin.com",https://github.com/stamparm/ipsum
+Ikarus,fp@ikarus.at,
+Inca (previous nProtect),virus_info@inca.co.kr,
+Jiangmin,"support@jiangmin.com, shaojia@jiangmin.com",
+Juniper Networks,"reportfp@labs.k7computing.com, k7viruslab@labs.k7computing.com",
+K7,"reportfp@labs.k7computing.com, k7viruslab@labs.k7computing.com",
+Kaspersky,newvirus@kaspersky.com,
+Kingsoft,ti@mingting.cn,https://www.lionic.com/reportfp
+Lionic,support@lionic.com,https://www.lionic.com/reportfp
+Lumu,vt@lumu.io,
+Malbeacon,vtreport@malbeacon.com,https://forums.malwarebytes.com/forum/122-false-positives/
+MalwarePatrol,kog@stsc.com,
+MalwareURL,team@malwareurl.com,
+Malwarebytes,,https://forums.malwarebytes.com/forum/122-false-positives/
+Malwared,,
+Malwares.com (Saint Security),kog@stsc.com,
+MaxSecure,tech@maxpcsecure.com,"https://www.mcafee.com/support/s/article/000001921?language=en_US, virus_research@mcafee.com"
+McAfee,,"https://www.mcafee.com/support/s/article/000001921?language=en_US, virus_research@mcafee.com"
+Microsoft,samples@escanav.com,https://www.microsoft.com/en-us/wdsi/filesubmission
+Microworld,samples@escanav.com,http://www.nanoav.ru/index.php?option=com_content&view=article&id=15&Itemid=83&lang=en false@nanoav.ru
+NANO,,http://www.nanoav.ru/index.php?option=com_content&view=article&id=15&Itemid=83&lang=en false@nanoav.ru
+Netcraft,,https://report.netcraft.com/report/mistake
+OpenPhish,vt-pan-false-positive@paloaltonetworks.com,https://live.paloaltonetworks.com/t5/virustotal/bd-p/VirusTotal_Discussions
+Palo Alto,vt-pan-false-positive@paloaltonetworks.com,https://live.paloaltonetworks.com/t5/virustotal/bd-p/VirusTotal_Discussions
+Panda,"falsepositives@pandasecurity.com, virussamples@pandasecurity.com",
+PhishFort,https://github.com/mitchellkrogza/Phishing.Database#please-remove-my-domain-from-this-list-,
+PhishLabs,info@phishlabs.com,
+Phishing Database,https://github.com/mitchellkrogza/Phishing.Database#please-remove-my-domain-from-this-list-,
+Phishtank,,https://www.support.prebytes.com/helpcenter/removals/
+Prebytes,,https://www.support.prebytes.com/helpcenter/removals/
+PrecisionSec,support@360safe.com,
+Qihoo360,support@360safe.com,
+Quick Heal,viruslab@quickheal.com,
+QuickHeal,viruslab@quickheal.com,
+Quttera,support@quttera.com,
+Rising,fp@rising.com.cn,
+SOCRadar,vt@socradar.io,https://support.sophos.com/
+SafeToOpen,virustotal@safetoopen.com,
+Sangfor,virustotal@sangfor.com.cn,
+Sansec eComscan,support@sansec.io,
+Scantitan,,https://www.scumware.org/removals.php
+Scumware.org,info@seclookup.com,https://www.scumware.org/removals.php
+Seclookup,info@seclookup.com,https://www.secureaplus.com/features/antivirus/report-false-positive/
+SecureAge,,https://www.secureaplus.com/features/antivirus/report-false-positive/
+SecureBrain,,
+Segasec,support@segasec.com,
+Sentinel One,report@sentinelone.com,
+SkyHigh,gatewayantimalwarefpsubmission@skyhighsecurity.com,
+Skyhigh,GatewayAnti-Malware-SupportEscalations@SkyhighSecurity.com,
+Snort IP sample list,vt@socradar.io,
+Sophos,samples@sophos.com,https://support.sophos.com/
+Spam404,,https://www.spamhaus.org/dbl/removal/form/
+Spamhaus,,https://www.spamhaus.org/dbl/removal/form/
+StopForumSpam,soc@sucuri.net,
+Sucuri SiteCheck,soc@sucuri.net,"https://symsubmit.symantec.com/submit/false_positive, https://knowledge.broadcom.com/external/article/173729/how-to-submit-false-positives-on-content.html"
+Symantec,TAVfp@tencent.com,"https://symsubmit.symantec.com/submit/false_positive, https://knowledge.broadcom.com/external/article/173729/how-to-submit-false-positives-on-content.html"
+Tencent,TAVfp@tencent.com,
+TheHacker,"virus@hacksoft.com.pe , falsopositivo@hacksoft.com.pe",
+ThreatHive,,
+Threatsourcing,fp@trapmine.com,
+Trapmine,fp@trapmine.com,
+Trellix,datasubmission@trellix.com,https://www.trendmicro.com/en_us/about/legal/detection-reevaluation.html
+TrendMicro,"virus@trendmicro.com, virus_doctor@trendmicro.com",https://www.trendmicro.com/en_us/about/legal/detection-reevaluation.html
+Trustlook,bd@trustlook.com,https://support.trustwave.com/virustotal-detection-review/
+Trustwave,post@helsecert.no,https://support.trustwave.com/virustotal-detection-review/
+URLQuery,contact@urlquery.net,
+URLhaus,contact@urlquery.net,
+Underworld,post@helsecert.no,
+VBA32,feedback@anti-virus.by,
+VX Vault,,https://www.webroot.com/us/en/business/support/vendor-dispute-contact-us
+Varist,"support@varist.com , virus@avsubmit.com",
+Viettel Threat Intelligence,cyberthreat@viettel.com.vn,
+Vipre,productsupport@vipre.com,
+VirIT,virustotal@viritpro.com,
+ViriBack,virustotal@viritpro.com,
+VirusDie,partners@virusdie.com,
+Webroot,"spyware-samples@f-secure.com, vsamples@f-secure.com",https://www.webroot.com/us/en/business/support/vendor-dispute-contact-us
+WithSecure/F-Secure,"spyware-samples@f-secure.com, vsamples@f-secure.com",
+Xcitium Verdict Cloud,support@xcitium.com,
+Yandex Safebrowsing,sbapi@support.yandex.ru,
+Yandex,yandex-antivir@support.yandex.ru,
+Yomi,yomi-false-positives@yoroi.company,
+ZeroCERT,virus@zillya.com,
+Zillya,virus@zillya.com,
+ZoneAlarm,zonealarm_VT_reports@checkpoint.com,
+Zoner,false@zonerantivirus.com,
+benkow.cc,,
+desenmascara.me,,
+eGambit (Tehtris),virus@tehtris.com,https://tehtris.com/egambit_fp.php
+malwares.com URL checker,team@malwareurl.com,
+securolytics,support@segasec.com,

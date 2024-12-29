@@ -1,16 +1,23 @@
 'use server';
 
-import { Prisma, type Project } from '@prisma/client';
 import { schedules as triggerSchedules } from '@trigger.dev/sdk/v3';
-import { type OptionalExcept } from '@/types';
+import { type OptionalExcept, type Project, Prisma } from '@/types';
 import { revalidatePath } from 'next/cache';
+import { Keys } from '@/lib/constants';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
-import { Keys } from '@/lib/constants';
 
 export const getProjectById = async (id: string) => {
+  const { session, activeMembership } = await getAuth();
+
+  if (!session || !activeMembership) {
+    throw new Error('Unauthorized');
+  }
+
+  const { tenantId } = activeMembership;
+
   const project = await prisma.project.findUniqueOrThrow({
-    where: { id },
+    where: { id, tenantId },
   });
 
   return { project };
@@ -23,6 +30,21 @@ export type ProjectFilters = {
 };
 
 export const getProjects = async (filters?: ProjectFilters) => {
+  const { session, activeMembership } = await getAuth();
+
+  if (!session || !activeMembership) {
+    throw new Error('Unauthorized');
+  }
+
+  const { tenantId } = activeMembership;
+
+  const totalProjects = await prisma.project.count({
+    where: {
+      deletedAt: null,
+      tenantId,
+    },
+  });
+
   const { page = 1, limit = 10, search } = filters || {};
 
   // Get paginated and filtered results
@@ -31,6 +53,7 @@ export const getProjects = async (filters?: ProjectFilters) => {
       AND: [
         {
           deletedAt: null,
+          tenantId,
         },
         // Add search filter
         search
@@ -68,6 +91,7 @@ export const getProjects = async (filters?: ProjectFilters) => {
 
   return {
     projects,
+    totalProjects,
     schedules: scheduleResponses,
   };
 };
@@ -89,11 +113,11 @@ export const upsertProject = async (data: UpsertProjectData) => {
 
   if (id) {
     const updatedProject = await prisma.project.update({
-      where: { id },
+      where: { id, tenantId },
       data: { ...rest, domain },
     });
 
-    const updatedSchedule = await schedules.update(updatedProject.scheduleId!, {
+    const updatedSchedule = await triggerSchedules.update(updatedProject.scheduleId!, {
       task: Keys.CHECK_VIRUSTOTAL_TASK,
       cron,
     });
@@ -111,7 +135,7 @@ export const upsertProject = async (data: UpsertProjectData) => {
     },
   });
 
-  const createdSchedule = await schedules.create({
+  const createdSchedule = await triggerSchedules.create({
     deduplicationKey: `${tenantId}/${domain}`,
     task: Keys.CHECK_VIRUSTOTAL_TASK,
     externalId: createdProject.id,
@@ -119,7 +143,7 @@ export const upsertProject = async (data: UpsertProjectData) => {
   });
 
   await prisma.project.update({
-    where: { id: createdProject.id },
+    where: { id: createdProject.id, tenantId },
     data: {
       scheduleId: createdSchedule.id,
     },
@@ -135,14 +159,16 @@ export const upsertProject = async (data: UpsertProjectData) => {
 };
 
 export const deleteProject = async (id: string) => {
-  const { session } = await getAuth();
+  const { session, activeMembership } = await getAuth();
 
-  if (!session) {
+  if (!session || !activeMembership) {
     throw new Error('Unauthorized');
   }
 
+  const { tenantId } = activeMembership;
+
   const foundProject = await prisma.project.findUniqueOrThrow({
-    where: { id },
+    where: { id, tenantId },
   });
 
   const deletedProject = await prisma.project.update({
@@ -154,7 +180,7 @@ export const deleteProject = async (id: string) => {
   });
 
   if (foundProject.scheduleId) {
-    await schedules.del(foundProject.scheduleId);
+    await triggerSchedules.del(foundProject.scheduleId);
   }
 
   revalidatePath('/dashboard/projects');
