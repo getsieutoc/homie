@@ -5,6 +5,7 @@ import { createStreamableValue } from 'ai/rsc';
 import { getOpenAIModel } from '@/lib/openai';
 import { streamObject } from 'ai';
 import { z } from 'zod';
+import { emailSchema } from '@/lib/schemas';
 
 export type ResultInput = {
   result: string;
@@ -33,14 +34,7 @@ export const generateEmail = async (input: ResultInput) => {
   (async () => {
     const { partialObjectStream } = await streamObject({
       model: getOpenAIModel(),
-      schema: z.object({
-        subject: z.string().describe('The email subject line'),
-        content: z
-          .string()
-          .describe(
-            'ONLY the body content of the email, do not include subject or other metadata'
-          ),
-      }),
+      schema: emailSchema,
       system: SYSTEM_PROMPT,
       prompt: emailPrompt,
       seed: Date.now(),

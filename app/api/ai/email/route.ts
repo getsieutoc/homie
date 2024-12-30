@@ -1,51 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SYSTEM_PROMPT } from '@/lib/constants';
 import { getOpenAIModel } from '@/lib/openai';
+import { emailSchema } from '@/lib/schemas';
 import { streamObject } from 'ai';
 import { z } from 'zod';
 
-export type Result = {
-  result: string;
-  engineName: string;
-  projectDomain: string;
-  resultCategory: string;
-};
-
-const resultSchema = z.object({
+const requestSchema = z.object({
   result: z.string(),
   engineName: z.string(),
   projectDomain: z.string(),
   resultCategory: z.string(),
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json();
-    const validatedData = resultSchema.parse(body);
+    const body = await req.json();
+    const inputs = requestSchema.parse(body);
 
-    const emailPrompt = `We received the result "${validatedData.result}" from ${validatedData.engineName}, as our domain has been ${validatedData.projectDomain} and is listed in ${validatedData.resultCategory}.
+    const emailPrompt = `
+    We received the result "${inputs.result}" from ${inputs.engineName}, as our domain has been ${inputs.projectDomain} and is listed in ${inputs.resultCategory}.
     Write a dispute message and send to them. The response should be formatted as follows:
       - subject: A clear and concise subject line
       - content: ONLY the body of the email, do not include any subject line or other metadata in the content field`;
 
-    const stream = await streamObject({
+    const result = streamObject({
       model: getOpenAIModel(),
-      schema: z.object({
-        subject: z.string().describe('The email subject line'),
-        content: z
-          .string()
-          .describe(
-            'ONLY the body content of the email, do not include subject or other metadata'
-          ),
-      }),
       system: SYSTEM_PROMPT,
       prompt: emailPrompt,
+      schema: emailSchema,
       seed: Date.now(),
     });
 
-    return new Response(stream);
-  } catch (error) {
-    console.error('Error generating email:', error);
+    return result.toTextStreamResponse();
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to generate email content' },
       { status: 500 }

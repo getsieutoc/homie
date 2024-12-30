@@ -26,6 +26,7 @@ export {
   useRouter,
 } from 'next/navigation';
 export { useQueryState, useQueryStates, parseAsFloat } from 'nuqs';
+export { experimental_useObject as useObject } from 'ai/react';
 export { useAtom, useSetAtom, useAtomValue } from 'jotai';
 export { default as useSWRImmutable } from 'swr/immutable';
 export { default as useSWRInfinite } from 'swr/infinite';

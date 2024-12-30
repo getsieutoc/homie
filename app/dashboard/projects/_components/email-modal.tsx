@@ -9,16 +9,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { type Result, type Project, HttpMethod } from '@/types';
+import { useObject, useRouter, useState, useForm, useEffect } from '@/hooks';
 import { Textarea } from '@/components/ui/textarea';
 import { updateResult } from '@/services/results';
 import { Button } from '@/components/ui/button';
-import { useRouter, useState } from '@/hooks';
 import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
 import { Send, Sparkles } from 'lucide-react';
+import { emailSchema } from '@/lib/schemas';
 import { fetcher } from '@/lib/utils';
-import { readStreamableValue } from 'ai/rsc';
-import { generateEmail } from '@/services/ai';
 
 export type Props = {
   isOpen: boolean;
@@ -36,38 +34,49 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [generation, setGeneration] = useState<string>('');
-  console.log('generation', generation);
+  const {
+    object,
+    submit,
+    stop,
+    isLoading: isStreaming,
+  } = useObject({
+    id: project.id,
+    api: '/api/ai/email',
+    schema: emailSchema,
+  });
 
   const lastMessage = result.lastMessage
     ? (JSON.parse(result.lastMessage) as EmailFormValues)
     : null;
 
   const form = useForm<EmailFormValues>({
-    defaultValues: lastMessage
-      ? lastMessage
-      : {
-          subject: '',
-          content: '',
-        },
+    defaultValues: lastMessage ? lastMessage : { subject: '', content: '' },
   });
+
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { isDirty },
+  } = form;
+
+  useEffect(() => {
+    if (object && isStreaming) {
+      setValue('subject', object.subject ?? '');
+      setValue('content', object.content ?? '');
+    }
+  }, [object, isStreaming]);
 
   const handleGenerate = async () => {
     try {
       setIsLoading(true);
 
-      const { object } = await generateEmail({
+      submit({
         result: result.result,
         engineName: result.engineName,
         resultCategory: result.category || 'malicious',
         projectDomain: project.domain,
       });
-
-      for await (const partialObject of readStreamableValue(object)) {
-        if (partialObject) {
-          setGeneration(JSON.stringify(partialObject.notifications, null, 2));
-        }
-      }
 
       setIsLoading(false);
     } catch (error) {
@@ -138,34 +147,28 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
         <form onSubmit={form.handleSubmit(handleSendNow)} className="space-y-4">
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Input placeholder="Subject" {...form.register('subject')} />
+              <Input placeholder="Subject" {...register('subject')} />
             </div>
             <div className="grid gap-2">
               <Textarea
                 placeholder="Content"
                 className="h-[200px]"
-                {...form.register('content')}
+                {...register('content')}
               />
-              {generation}
             </div>
           </div>
 
           <DialogFooter>
             <div className="flex w-full justify-between">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGenerate}
-                disabled={isLoading}
-              >
+              <Button variant="outline" onClick={handleGenerate} disabled={isLoading}>
                 <Sparkles className="mr-2 h-4 w-4" />
                 {makeGenerateLabel()}
               </Button>
               <div className="flex items-center gap-2">
                 <Button
-                  type="button"
-                  variant="outline"
-                  onClick={form.handleSubmit(handleSaveForLater)}
+                  onClick={handleSubmit(handleSaveForLater)}
+                  variant={isDirty ? 'success' : 'outline'}
+                  disabled={!isDirty}
                 >
                   Save for later
                 </Button>
