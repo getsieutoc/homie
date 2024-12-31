@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { updateResult } from '@/services/results';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Sparkles } from 'lucide-react';
+import { Loader2, Send, Sparkles } from 'lucide-react';
 import { emailSchema } from '@/lib/schemas';
 import { fetcher } from '@/lib/utils';
 
@@ -37,7 +37,6 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   const {
     object,
     submit,
-    stop,
     isLoading: isStreaming,
   } = useObject({
     id: project.id,
@@ -62,26 +61,21 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
 
   useEffect(() => {
     if (object && isStreaming) {
-      setValue('subject', object.subject ?? '');
-      setValue('content', object.content ?? '');
+      setValue('subject', object.subject ?? '', { shouldDirty: true });
+      setValue('content', object.content ?? '', { shouldDirty: true });
     }
   }, [object, isStreaming]);
 
   const handleGenerate = async () => {
     try {
-      setIsLoading(true);
-
       submit({
         result: result.result,
         engineName: result.engineName,
         resultCategory: result.category || 'malicious',
         projectDomain: project.domain,
       });
-
-      setIsLoading(false);
     } catch (error) {
       console.error('Error generating email:', error);
-      setIsLoading(false);
     }
   };
 
@@ -128,10 +122,10 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
 
   const makeGenerateLabel = () => {
     if (lastMessage) {
-      return isLoading ? 'Regenerating...' : 'Regenerate';
+      return isStreaming ? 'Regenerating...' : 'Regenerate';
     }
 
-    return isLoading ? 'Generating...' : 'Generate';
+    return isStreaming ? 'Generating...' : 'Generate';
   };
 
   return (
@@ -160,10 +154,16 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
 
           <DialogFooter>
             <div className="flex w-full justify-between">
-              <Button variant="outline" onClick={handleGenerate} disabled={isLoading}>
-                <Sparkles className="mr-2 h-4 w-4" />
+              <Button variant="outline" onClick={handleGenerate} disabled={isStreaming}>
+                {isStreaming ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4" />
+                )}
+
                 {makeGenerateLabel()}
               </Button>
+
               <div className="flex items-center gap-2">
                 <Button
                   onClick={handleSubmit(handleSaveForLater)}
@@ -172,7 +172,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
                 >
                   Save for later
                 </Button>
-                <Button type="submit">
+                <Button disabled={!isDirty} type="submit">
                   <Send className="mr-2 h-4 w-4" /> Send Now
                 </Button>
               </div>
