@@ -35,7 +35,7 @@ import {
   ChevronRight,
   ChevronsUpDown,
   CreditCard,
-  GalleryVerticalEnd,
+  Axe,
   LogOut,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -47,8 +47,8 @@ import Link from 'next/link';
 import { Icons } from '../icons';
 
 export const company = {
-  name: 'Acme Inc',
-  logo: GalleryVerticalEnd,
+  name: 'Homie',
+  logo: Axe,
   plan: 'Enterprise',
 };
 
@@ -64,13 +64,6 @@ export const AppSidebar = () => {
     return null;
   }
 
-  const filteredNavItems = navItems.filter((item) => {
-    if (item.isAdminOnly) {
-      return user?.role === 'ADMIN';
-    }
-    return true;
-  });
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -84,11 +77,11 @@ export const AppSidebar = () => {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="asdfasdf overflow-x-hidden">
+      <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
           <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>
-            {filteredNavItems.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon ? Icons[item.icon] : Icons.logo;
               const isActive = pathname === item.url;
 

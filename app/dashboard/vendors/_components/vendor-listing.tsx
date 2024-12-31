@@ -17,7 +17,7 @@ export function VendorListing({ vendors, totalItems }: Props) {
     <DataTable
       columns={[
         {
-          accessorKey: 'name',
+          accessorKey: 'engineName',
           header: ({ column }) => {
             const isSorted = column.getIsSorted();
             return (
@@ -25,7 +25,7 @@ export function VendorListing({ vendors, totalItems }: Props) {
                 variant="ghost"
                 onClick={() => column.toggleSorting(isSorted === 'asc')}
               >
-                Name
+                Vendor Name
                 {isSorted === 'asc' ? (
                   <ArrowUpNarrowWide className="ml-2 h-4 w-4" />
                 ) : isSorted === 'desc' ? (
@@ -36,6 +36,7 @@ export function VendorListing({ vendors, totalItems }: Props) {
               </Button>
             );
           },
+          size: 200,
         },
         {
           accessorKey: 'email',
@@ -116,9 +117,7 @@ export function VendorListing({ vendors, totalItems }: Props) {
           cell: ({ row }) => {
             const tenantId = row.original.tenantId as string | null;
             return (
-              <Badge variant={tenantId ? 'default' : 'secondary'}>
-                {tenantId ? 'Organization' : 'Default'}
-              </Badge>
+              <Badge variant="outline">{tenantId ? 'Organization' : 'Default'}</Badge>
             );
           },
         },

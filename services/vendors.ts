@@ -1,7 +1,7 @@
 'use server';
 
-import { getAuth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { getAuth } from '@/auth';
 
 export const isDefaultVendorsEmpty = async () => {
   const count = await prisma.vendor.count({
@@ -20,7 +20,7 @@ export type VendorFilters = {
 
 export type UpsertVendorData = {
   id?: string;
-  name: string;
+  engineName: string;
   email?: string;
   url?: string;
   tenantId: string;
@@ -42,13 +42,26 @@ export const getVendors = async (filters?: VendorFilters) => {
       AND: [
         {
           deletedAt: null,
-          OR: [{ tenantId }, { tenantId: null }],
+          OR: [
+            {
+              tenantId: null,
+            },
+            {
+              tenantId,
+            },
+          ],
         },
         search
           ? {
               OR: [
                 {
-                  name: {
+                  engineName: {
+                    contains: search,
+                    mode: 'insensitive',
+                  },
+                },
+                {
+                  email: {
                     contains: search,
                     mode: 'insensitive',
                   },
@@ -88,9 +101,18 @@ export const getVendors = async (filters?: VendorFilters) => {
   };
 };
 
-export const getVendorById = async (id: string) => {
-  return prisma.vendor.findUnique({
-    where: { id },
+export const getOneVendor = async (key: string) => {
+  const foundById = await prisma.vendor.findUnique({
+    where: { id: key },
+  });
+
+  if (foundById) {
+    return foundById;
+  }
+
+  // If not found by ID, try to find by engineName
+  return await prisma.vendor.findUnique({
+    where: { engineName: key },
   });
 };
 

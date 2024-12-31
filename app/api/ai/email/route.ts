@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SYSTEM_PROMPT } from '@/lib/constants';
 import { getOpenAIModel } from '@/lib/openai';
-import { emailSchema } from '@/lib/schemas';
+import { emailSchema } from '@/lib/zod-schemas';
 import { streamObject } from 'ai';
 import { z } from 'zod';
 

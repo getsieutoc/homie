@@ -21,18 +21,20 @@ export type Props = {
   detailedResults?: DetailedResults;
 };
 
-export function ProjectView({ project, schedule, stats, detailedResults }: Props) {
+export const ProjectView = ({ project, schedule, stats, detailedResults }: Props) => {
   return (
     <div className="w-full">
       <div className="pb-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-lg">{project.domain}</div>
+            <div className="flex items-center gap-2 text-2xl font-bold">
+              {project.domain}
+            </div>
             <div className="text-sm text-muted-foreground">
               {project.description || 'No description provided'}
             </div>
           </div>
-          <Badge variant={!project.deletedAt ? 'default' : 'secondary'}>
+          <Badge variant="outline" colorScheme={project.deletedAt ? 'danger' : 'success'}>
             {!project.deletedAt ? 'Active' : 'Inactive'}
           </Badge>
         </div>
@@ -89,4 +91,4 @@ export function ProjectView({ project, schedule, stats, detailedResults }: Props
       </div>
     </div>
   );
-}
+};

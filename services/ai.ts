@@ -5,7 +5,7 @@ import { createStreamableValue } from 'ai/rsc';
 import { getOpenAIModel } from '@/lib/openai';
 import { streamObject } from 'ai';
 import { z } from 'zod';
-import { emailSchema } from '@/lib/schemas';
+import { emailSchema } from '@/lib/zod-schemas';
 
 export type ResultInput = {
   result: string;

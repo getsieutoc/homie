@@ -8,15 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { type Result, type Project, HttpMethod } from '@/types';
-import { useObject, useRouter, useState, useForm, useEffect } from '@/hooks';
+import { useObject, useRouter, useForm, useEffect } from '@/hooks';
+import { Loader2, Send, Sparkles } from 'lucide-react';
+import { type Result, type Project } from '@/types';
 import { Textarea } from '@/components/ui/textarea';
 import { updateResult } from '@/services/results';
+import { getOneVendor } from '@/services/vendors';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Send, Sparkles } from 'lucide-react';
-import { emailSchema } from '@/lib/schemas';
-import { fetcher } from '@/lib/utils';
+import { emailSchema } from '@/lib/zod-schemas';
 
 export type Props = {
   isOpen: boolean;
@@ -32,7 +32,8 @@ export type EmailFormValues = {
 
 export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+
+  console.log({ result });
 
   const {
     object,
@@ -56,6 +57,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
     register,
     setValue,
     handleSubmit,
+    getValues,
     formState: { isDirty },
   } = form;
 
@@ -81,15 +83,12 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
 
   const handleSendNow = async (data: EmailFormValues) => {
     try {
-      const vendorResponse = await fetcher(
-        `/api/vendors/search?name=${result.engineName}`,
-        {
-          method: HttpMethod.GET,
-        }
-      );
+      const vendor = await getOneVendor(result.engineName);
 
-      if (vendorResponse.email) {
-        console.log('Sending email to:', vendorResponse.email);
+      if (vendor?.email) {
+        console.log('Sending email to:', vendor.email);
+      } else if (vendor?.url) {
+        console.log('Sending email to:', vendor.email);
       }
 
       await updateResult({
@@ -105,12 +104,14 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
     }
   };
 
-  const handleSaveForLater = async (data: EmailFormValues) => {
+  const handleSaveForLater = async () => {
     try {
+      const inputData = getValues();
+
       await updateResult({
         projectId: result.projectId,
         engineName: result.engineName,
-        lastMessage: JSON.stringify(data),
+        lastMessage: JSON.stringify(inputData),
       });
 
       onClose();
@@ -138,7 +139,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(handleSendNow)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleSendNow)} className="space-y-4">
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Input placeholder="Subject" {...register('subject')} />
@@ -166,13 +167,14 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
 
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={handleSubmit(handleSaveForLater)}
+                  onClick={handleSaveForLater}
                   variant={isDirty ? 'success' : 'outline'}
                   disabled={!isDirty}
                 >
                   Save for later
                 </Button>
-                <Button disabled={!isDirty} type="submit">
+
+                <Button disabled={!isDirty && !!result.disputedAt} type="submit">
                   <Send className="mr-2 h-4 w-4" /> Send Now
                 </Button>
               </div>

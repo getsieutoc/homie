@@ -50,6 +50,18 @@ export const upsertResults = async (data: UpsertResultsData) => {
   }
 
   for (const result of results) {
+    // First ensure the vendor exists
+    await prisma.vendor.upsert({
+      where: {
+        engineName: result.engine_name,
+      },
+      update: {}, // No updates needed
+      create: {
+        engineName: result.engine_name,
+      },
+    });
+
+    // Then upsert the result
     await prisma.result.upsert({
       where: {
         projectId_engineName: {

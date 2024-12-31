@@ -36,7 +36,6 @@ export const navItems: NavItem[] = [
     icon: 'vendor',
     shortcut: ['g', 'v'],
     isActive: false,
-    isAdminOnly: true,
     items: [], // No child items
   },
   {

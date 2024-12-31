@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma';
-import fs from 'fs';
-import path from 'path';
 import { parse } from 'csv-parse/sync';
+import { prisma } from '@/lib/prisma';
+import path from 'path';
+import fs from 'fs';
 
 export const readVendorList = async () => {
   const csvFilePath = path.join(__dirname, 'vendor-list.csv');
@@ -29,7 +29,7 @@ async function main() {
       vendors.map((vendor: { Engine: string; Email: string; URL: string }) =>
         prisma.vendor.create({
           data: {
-            name: vendor.Engine,
+            engineName: vendor.Engine,
             email: vendor.Email || null,
             url: vendor.URL || null,
           },
