@@ -1,6 +1,12 @@
 'use client';
 
-import { CircleHelp, CircleCheckBig, TriangleAlert } from 'lucide-react';
+import {
+  CircleHelp,
+  CircleCheckBig,
+  TriangleAlert,
+  OctagonAlert,
+  Webhook,
+} from 'lucide-react';
 import { type Stats } from '@/types';
 
 const renderContent = (stat: Stats[number]) => {
@@ -12,9 +18,21 @@ const renderContent = (stat: Stats[number]) => {
           {stat._count.result}
         </div>
       );
-    case 'malicious':
-    case 'suspicious':
     case 'phishing':
+      return (
+        <div className="flex items-center gap-x-1 text-red-700 hover:text-red-500">
+          <Webhook className="h-4 w-4" />
+          {stat._count.result}
+        </div>
+      );
+    case 'malicious':
+      return (
+        <div className="flex items-center gap-x-1 text-red-700 hover:text-red-500">
+          <OctagonAlert className="h-4 w-4" />
+          {stat._count.result}
+        </div>
+      );
+    case 'suspicious':
       return (
         <div className="flex items-center gap-x-1 text-red-700 hover:text-red-500">
           <TriangleAlert className="h-4 w-4" />
@@ -36,6 +54,18 @@ type Props = {
   stats: Stats;
 };
 
-export const ResultStats = ({ projectId, stats }: Props) => {
-  return <div className="flex gap-x-3">{stats.map((o) => renderContent(o))}</div>;
+export const ResultStats = ({ stats }: Props) => {
+  return (
+    <div className="flex gap-x-3">
+      {stats
+        .sort((a, b) => {
+          if (a.result === 'unrated') return 1;
+          if (b.result === 'unrated') return -1;
+          if (a.result === 'clean') return 1;
+          if (b.result === 'clean') return -1;
+          return a.result.localeCompare(b.result);
+        })
+        .map((o) => renderContent(o))}
+    </div>
+  );
 };
