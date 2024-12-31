@@ -1,8 +1,15 @@
+import {
+  CircleCheckBig,
+  AlertTriangle,
+  CircleHelp,
+  Minus,
+  SendHorizonal,
+  ExternalLink,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CircleCheckBig, AlertTriangle, CircleHelp, Minus, Send } from 'lucide-react';
+import { type Project, type ResultWithPayload } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { type Project, type Result } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
@@ -13,7 +20,7 @@ import { EmailModal } from './email-modal';
 
 type DetailedResults = {
   type: string;
-  items: Result[];
+  items: ResultWithPayload[];
 }[];
 
 export const ResultSection = ({
@@ -21,13 +28,15 @@ export const ResultSection = ({
   items,
   project,
 }: DetailedResults[number] & { project: Project }) => {
+  console.log({ type, items });
+
   const isMalicious = ['malicious', 'suspicious', 'phishing'].includes(type);
   const isClean = type === 'clean';
 
-  const [selectedResult, setSelectedResult] = useState<Result | null>(null);
+  const [selectedResult, setSelectedResult] = useState<ResultWithPayload | null>(null);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
-  const handleGenerateEmail = (result: Result) => {
+  const handleGenerateEmail = (result: ResultWithPayload) => {
     setSelectedResult(result);
     setIsEmailModalOpen(true);
   };
@@ -120,11 +129,34 @@ export const ResultSection = ({
                     )}
 
                     {isMalicious && (
-                      <div className="mt-2 flex items-center justify-start gap-2 px-4">
-                        <Button onClick={() => handleGenerateEmail(result)} size="xs">
-                          <Send className="mr-2 h-3 w-3" />
-                          Send Dispute Email
-                        </Button>
+                      <div className="mt-2 flex items-center justify-start gap-2 px-4 pb-4">
+                        {result.vendor.email && (
+                          <Button
+                            onClick={() => handleGenerateEmail(result)}
+                            variant="warning"
+                            size="xs"
+                          >
+                            <SendHorizonal className="mr-2 h-3 w-3" />
+                            Send Dispute Email
+                          </Button>
+                        )}
+
+                        {result.vendor.url && (
+                          <Button
+                            onClick={() => window.open(result.vendor.url!, '_blank')}
+                            variant="info"
+                            size="xs"
+                          >
+                            <ExternalLink className="mr-2 h-3 w-3" />
+                            Submit Form
+                          </Button>
+                        )}
+
+                        {!result.vendor.email && !result.vendor.url && (
+                          <p className="text-xs text-muted-foreground">
+                            No dispute method available
+                          </p>
+                        )}
                       </div>
                     )}
 

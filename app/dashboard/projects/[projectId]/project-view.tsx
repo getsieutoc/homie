@@ -1,7 +1,11 @@
 'use client';
 
-import { type Stats, type Result, type TriggerSchedule, type Project } from '@/types';
-import { CalendarIcon, ClockIcon, Globe2Icon, TimerIcon } from 'lucide-react';
+import {
+  type Stats,
+  type TriggerSchedule,
+  type Project,
+  ResultWithPayload,
+} from '@/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
@@ -11,7 +15,7 @@ import { ResultSection } from './result-section';
 
 type DetailedResults = {
   type: string;
-  items: Result[];
+  items: ResultWithPayload[];
 }[];
 
 export type Props = {

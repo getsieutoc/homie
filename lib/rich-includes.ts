@@ -1,5 +1,3 @@
-import { Prisma } from '@prisma/client';
-
 export const userIncludes = {
   memberships: {
     select: {
@@ -10,6 +8,13 @@ export const userIncludes = {
   },
 };
 
-export type UserWithPayload = Prisma.UserGetPayload<{
-  include: typeof userIncludes;
-}>;
+export const resultIncludes = {
+  vendor: {
+    select: {
+      id: true,
+      engineName: true,
+      email: true,
+      url: true,
+    },
+  },
+};

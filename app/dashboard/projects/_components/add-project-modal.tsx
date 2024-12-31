@@ -80,7 +80,7 @@ export function AddProjectModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="default" className="text-xs md:text-sm">
+        <Button className="text-xs md:text-sm">
           <Plus className="mr-2 h-4 w-4" /> Add New Project
         </Button>
       </DialogTrigger>

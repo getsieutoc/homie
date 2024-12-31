@@ -1,5 +1,6 @@
 'use server';
 
+import { resultIncludes } from '@/lib/rich-includes';
 import { type VTResult, Prisma } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
@@ -28,6 +29,7 @@ type ResultQuery = {
 
 export const getResults = async ({ where, orderBy = {}, skip, take }: ResultQuery) => {
   return await prisma.result.findMany({
+    include: resultIncludes,
     where,
     orderBy,
     skip,

@@ -1,6 +1,8 @@
+import { userIncludes, resultIncludes } from '@/lib/rich-includes';
 import { getResultStats } from '@/services/results';
 import { getProjects } from '@/services/projects';
 import { Icons } from '@/components/icons';
+import { Prisma } from '@prisma/client';
 import { type ReactNode } from 'react';
 
 export { type SearchParams } from 'nuqs/parsers';
@@ -8,7 +10,13 @@ export { type SearchParams } from 'nuqs/parsers';
 // why it does not effect?
 export * from '@prisma/client';
 
-export * from '@/lib/rich-includes';
+export type UserWithPayload = Prisma.UserGetPayload<{
+  include: typeof userIncludes;
+}>;
+
+export type ResultWithPayload = Prisma.ResultGetPayload<{
+  include: typeof resultIncludes;
+}>;
 
 export type Stats = Awaited<ReturnType<typeof getResultStats>>;
 

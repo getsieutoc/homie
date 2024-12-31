@@ -8,32 +8,41 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useObject, useRouter, useForm, useEffect } from '@/hooks';
+import { useObject, useRouter, useForm, useEffect, useState } from '@/hooks';
 import { Loader2, Send, Sparkles } from 'lucide-react';
-import { type Result, type Project } from '@/types';
+import { type ResultWithPayload, type Project } from '@/types';
 import { Textarea } from '@/components/ui/textarea';
 import { updateResult } from '@/services/results';
-import { getOneVendor } from '@/services/vendors';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { emailSchema } from '@/lib/zod-schemas';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 
 export type Props = {
   isOpen: boolean;
   onClose: () => void;
-  result: Result;
+  result: ResultWithPayload;
   project: Project;
 };
 
-export type EmailFormValues = {
-  subject: string;
-  content: string;
-};
+const formSchema = z.object({
+  selectedEmails: z.array(z.string().email({ message: 'Must be a valid email address' })),
+  subject: z.string().min(10, {
+    message: 'Subject can not be too short',
+  }),
+  content: z.string().min(10, {
+    message: 'Content can not be too short',
+  }),
+});
+
+type FormInputs = z.infer<typeof formSchema>;
 
 export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   const router = useRouter();
-
-  console.log({ result });
 
   const {
     object,
@@ -46,11 +55,19 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
   });
 
   const lastMessage = result.lastMessage
-    ? (JSON.parse(result.lastMessage) as EmailFormValues)
-    : null;
+    ? (JSON.parse(result.lastMessage) as FormInputs)
+    : { subject: '', content: '' };
 
-  const form = useForm<EmailFormValues>({
-    defaultValues: lastMessage ? lastMessage : { subject: '', content: '' },
+  const vendorEmails = result.vendor.email
+    ? result.vendor.email.split(',').map((s) => s.trim())
+    : [];
+
+  const form = useForm<FormInputs>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      ...lastMessage,
+      selectedEmails: vendorEmails,
+    },
   });
 
   const {
@@ -81,14 +98,10 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
     }
   };
 
-  const handleSendNow = async (data: EmailFormValues) => {
+  const handleSendNow = async (data: FormInputs) => {
     try {
-      const vendor = await getOneVendor(result.engineName);
-
-      if (vendor?.email) {
-        console.log('Sending email to:', vendor.email);
-      } else if (vendor?.url) {
-        console.log('Sending email to:', vendor.email);
+      if (result.vendor.email) {
+        console.log('Sending email to:', result.vendor.email);
       }
 
       await updateResult({
@@ -139,48 +152,80 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleSendNow)} className="space-y-4">
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Input placeholder="Subject" {...register('subject')} />
-            </div>
-            <div className="grid gap-2">
-              <Textarea
-                placeholder="Content"
-                className="h-[200px]"
-                {...register('content')}
-              />
-            </div>
-          </div>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(handleSendNow)} className="space-y-4">
+            <div className="grid gap-4 py-4">
+              {vendorEmails.map((email) => (
+                <FormField
+                  key={email}
+                  control={form.control}
+                  name="selectedEmails"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={email}
+                        className="flex flex-row items-center space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(email)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, email])
+                                : field.onChange(
+                                    field.value?.filter((value) => value !== email)
+                                  );
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="text-sm font-normal">{email}</FormLabel>
+                      </FormItem>
+                    );
+                  }}
+                />
+              ))}
 
-          <DialogFooter>
-            <div className="flex w-full justify-between">
-              <Button variant="outline" onClick={handleGenerate} disabled={isStreaming}>
-                {isStreaming ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Sparkles className="mr-2 h-4 w-4" />
-                )}
-
-                {makeGenerateLabel()}
-              </Button>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={handleSaveForLater}
-                  variant={isDirty ? 'success' : 'outline'}
-                  disabled={!isDirty}
-                >
-                  Save for later
-                </Button>
-
-                <Button disabled={!isDirty && !!result.disputedAt} type="submit">
-                  <Send className="mr-2 h-4 w-4" /> Send Now
-                </Button>
+              <div className="grid gap-2">
+                <Input placeholder="Subject" {...register('subject')} />
+              </div>
+              <div className="grid gap-2">
+                <Textarea
+                  placeholder="Content"
+                  className="h-[200px]"
+                  {...register('content')}
+                />
               </div>
             </div>
-          </DialogFooter>
-        </form>
+
+            <DialogFooter>
+              <div className="flex w-full justify-between">
+                <Button variant="success" onClick={handleGenerate} disabled={isStreaming}>
+                  {isStreaming ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="mr-2 h-4 w-4" />
+                  )}
+
+                  {makeGenerateLabel()}
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={handleSaveForLater}
+                    variant={isDirty ? 'info' : 'outline'}
+                    disabled={!isDirty}
+                  >
+                    Save for later
+                  </Button>
+
+                  <Button disabled={!isDirty || !!result.disputedAt} type="submit">
+                    <Send className="mr-2 h-4 w-4" /> Send Now
+                  </Button>
+                </div>
+              </div>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
