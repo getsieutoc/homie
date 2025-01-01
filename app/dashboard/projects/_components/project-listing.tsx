@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { type Stats, type Project, type TriggerSchedule } from '@/types';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
 import { DataTable } from '@/components/ui/table/data-table';
 import { HelpCircle, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -29,14 +29,14 @@ export const ProjectListing = ({ projects, schedules, stats }: Props) => {
 
   return (
     <>
-      <Dialog open={isLoading}>
-        <DialogContent className="flex items-center justify-center p-6">
+      <AlertDialog open={isLoading}>
+        <AlertDialogContent className="flex items-center justify-center p-6">
           <div className="flex items-center gap-2">
             <Loader2 className="h-6 w-6 animate-spin" />
             <p>Loading...</p>
           </div>
-        </DialogContent>
-      </Dialog>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <DataTable
         columns={[
