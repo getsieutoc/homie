@@ -7,20 +7,21 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useObject, useRouter, useForm, useEffect, useState } from '@/hooks';
+} from 'components/ui/dialog';
+import { useObject, useRouter, useForm, useEffect, useState } from 'hooks';
 import { Loader2, Send, Sparkles } from 'lucide-react';
-import { type ResultWithPayload, type Project } from '@/types';
-import { Textarea } from '@/components/ui/textarea';
-import { updateResult } from '@/services/results';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { emailSchema } from '@/lib/zod-schemas';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
+import { type ResultWithPayload, type Project } from 'types';
+import { Textarea } from 'components/ui/textarea';
+import { updateResult } from 'services/results';
+import { sendEmail } from 'services/email';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { emailSchema } from 'lib/zod-schemas';
+import { Checkbox } from 'components/ui/checkbox';
+import { Label } from 'components/ui/label';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel } from 'components/ui/form';
 
 export type Props = {
   isOpen: boolean;
@@ -59,7 +60,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
     : { subject: '', content: '' };
 
   const vendorEmails = result.vendor.email
-    ? result.vendor.email.split(',').map((s) => s.trim())
+    ? result.vendor.email.split(',').map((s: string) => s.trim())
     : [];
 
   const form = useForm<FormInputs>({
@@ -100,8 +101,12 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
 
   const handleSendNow = async (data: FormInputs) => {
     try {
-      if (result.vendor.email) {
-        console.log('Sending email to:', result.vendor.email);
+      if (data.selectedEmails.length > 0) {
+        await sendEmail({
+          to: data.selectedEmails,
+          subject: data.subject,
+          content: data.content,
+        });
       }
 
       await updateResult({
@@ -155,7 +160,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
         <Form {...form}>
           <form onSubmit={handleSubmit(handleSendNow)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              {vendorEmails.map((email) => (
+              {vendorEmails.map((email: string) => (
                 <FormField
                   key={email}
                   control={form.control}
@@ -169,11 +174,13 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
                         <FormControl>
                           <Checkbox
                             checked={field.value?.includes(email)}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={(checked: boolean) => {
                               return checked
                                 ? field.onChange([...field.value, email])
                                 : field.onChange(
-                                    field.value?.filter((value) => value !== email)
+                                    field.value?.filter(
+                                      (value: string) => value !== email
+                                    )
                                   );
                             }}
                           />

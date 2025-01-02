@@ -35,3 +35,6 @@ yarn-error.log*
 next-env.d.ts
 
 .trigger
+
+# AI helpers
+/cline_docs
