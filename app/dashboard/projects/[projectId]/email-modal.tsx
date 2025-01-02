@@ -7,21 +7,21 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from 'components/ui/dialog';
-import { useObject, useRouter, useForm, useEffect, useState } from 'hooks';
+} from '@/components/ui/dialog';
+import { useObject, useRouter, useForm, useEffect, useState } from '@/hooks';
 import { Loader2, Send, Sparkles } from 'lucide-react';
-import { type ResultWithPayload, type Project } from 'types';
-import { Textarea } from 'components/ui/textarea';
-import { updateResult } from 'services/results';
-import { sendEmail } from 'services/email';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
-import { emailSchema } from 'lib/zod-schemas';
-import { Checkbox } from 'components/ui/checkbox';
-import { Label } from 'components/ui/label';
+import { type ResultWithPayload, type Project } from '@/types';
+import { Textarea } from '@/components/ui/textarea';
+import { updateResult } from '@/services/results';
+import { sendEmail } from '@/services/email';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { emailSchema } from '@/lib/zod-schemas';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel } from 'components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 
 export type Props = {
   isOpen: boolean;

@@ -1,5 +1,6 @@
 'use client';
-import { Button } from '@/components/ui/button';
+
+import { Button } from '../../../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -7,32 +8,37 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '../../../../components/ui/form';
+import { Input } from '../../../../components/ui/input';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-interface OrganizationFormType {
+interface ProfileFormProps {
+  categories: string[];
+  initialData: any | null;
+}
+
+interface ProfileFormType {
   name: string;
 }
 
-const OrganizationCreateForm = () => {
+const ProfileCreateForm = ({ categories, initialData }: ProfileFormProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<OrganizationFormType>({
-    defaultValues: {
+  const form = useForm<ProfileFormType>({
+    defaultValues: initialData || {
       name: '',
     },
   });
 
-  const onSubmit = async (data: OrganizationFormType) => {
+  const onSubmit = async (data: ProfileFormType) => {
     try {
       setLoading(true);
-      // TODO: Add API call to create organization
+      // TODO: Add API call to create profile
       router.refresh();
-      router.push('/dashboard/organizations');
+      router.push('/dashboard/profiles');
     } catch (error) {
       console.error(error);
     } finally {
@@ -46,26 +52,22 @@ const OrganizationCreateForm = () => {
         <FormField
           control={form.control}
           name="name"
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem>
-              <FormLabel>Organization Name</FormLabel>
+              <FormLabel>Profile Name</FormLabel>
               <FormControl>
-                <Input
-                  disabled={loading}
-                  placeholder="Enter organization name"
-                  {...field}
-                />
+                <Input disabled={loading} placeholder="Enter profile name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" disabled={loading}>
-          Create Organization
+          Create Profile
         </Button>
       </form>
     </Form>
   );
 };
 
-export default OrganizationCreateForm;
+export default ProfileCreateForm;
