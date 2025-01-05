@@ -8,20 +8,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useObject, useRouter, useForm, useEffect, useState } from '@/hooks';
-import { Loader2, Send, Sparkles } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { useObject, useRouter, useForm, useEffect } from '@/hooks';
 import { type ResultWithPayload, type Project } from '@/types';
+import { Loader2, Send, Sparkles } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { updateResult } from '@/services/results';
+import { updateResultById } from '@/services/results';
 import { sendEmail } from '@/services/email';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { emailSchema } from '@/lib/zod-schemas';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import * as z from 'zod';
 
 export type Props = {
   isOpen: boolean;
@@ -109,10 +108,11 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
         });
       }
 
-      await updateResult({
-        projectId: result.projectId,
-        engineName: result.engineName,
+      // update the dispute count and disputed at status
+      await updateResultById(result.id, {
         lastMessage: JSON.stringify(data),
+        disputedAt: new Date(),
+        disputeCount: result.disputeCount + 1,
       });
 
       onClose();
@@ -126,9 +126,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
     try {
       const inputData = getValues();
 
-      await updateResult({
-        projectId: result.projectId,
-        engineName: result.engineName,
+      await updateResultById(result.id, {
         lastMessage: JSON.stringify(inputData),
       });
 
@@ -225,7 +223,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
                     Save for later
                   </Button>
 
-                  <Button disabled={!isDirty || !!result.disputedAt} type="submit">
+                  <Button disabled={!isDirty} type="submit">
                     <Send className="mr-2 h-4 w-4" /> Send Now
                   </Button>
                 </div>

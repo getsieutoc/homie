@@ -1,6 +1,8 @@
-import { Client } from 'postmark';
+'use server';
 
-const postmarkClient = new Client(process.env.POSTMARK_API_KEY!);
+import * as postmark from 'postmark';
+
+const postmarkClient = new postmark.ServerClient(process.env.POSTMARK_API_KEY!);
 
 type EmailParams = {
   to: string[];
@@ -11,12 +13,15 @@ type EmailParams = {
 
 export const sendEmail = async ({ to, subject, content, from }: EmailParams) => {
   try {
+    // Convert newlines to HTML line breaks
+    const htmlContent = content.replace(/\n/g, '<br>');
+
     const response = await postmarkClient.sendEmailBatch(
       to.map((email) => ({
         From: from || process.env.POSTMARK_FROM_EMAIL!,
         To: email,
         Subject: subject,
-        HtmlBody: content,
+        HtmlBody: htmlContent,
         MessageStream: 'outbound',
       }))
     );

@@ -1,10 +1,10 @@
 'use client';
 
 import {
-  type Stats,
+  type ResultWithPayload,
   type TriggerSchedule,
   type Project,
-  ResultWithPayload,
+  type Stats,
 } from '@/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';

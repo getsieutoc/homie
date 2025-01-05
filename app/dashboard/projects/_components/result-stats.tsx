@@ -13,35 +13,35 @@ const renderContent = (stat: Stats[number]) => {
   switch (stat.result) {
     case 'clean':
       return (
-        <div className="flex items-center gap-x-1 text-green-700 hover:text-green-500">
+        <div className="flex items-center gap-x-1 font-bold text-green-700 hover:text-green-500">
           <CircleCheckBig className="h-4 w-4" />
           {stat._count.result}
         </div>
       );
     case 'phishing':
       return (
-        <div className="flex items-center gap-x-1 text-red-700 hover:text-red-500">
+        <div className="flex items-center gap-x-1 font-bold text-red-700 hover:text-red-500">
           <Webhook className="h-4 w-4" />
           {stat._count.result}
         </div>
       );
     case 'malicious':
       return (
-        <div className="flex items-center gap-x-1 text-red-700 hover:text-red-500">
+        <div className="flex items-center gap-x-1 font-bold text-red-700 hover:text-red-500">
           <OctagonAlert className="h-4 w-4" />
           {stat._count.result}
         </div>
       );
     case 'suspicious':
       return (
-        <div className="flex items-center gap-x-1 text-red-700 hover:text-red-500">
+        <div className="flex items-center gap-x-1 font-bold text-red-700 hover:text-red-500">
           <TriangleAlert className="h-4 w-4" />
           {stat._count.result}
         </div>
       );
     default:
       return (
-        <div className="flex items-center gap-x-1 text-gray-600 hover:text-gray-400">
+        <div className="flex items-center gap-x-1 font-bold text-gray-600 hover:text-gray-400">
           <CircleHelp className="h-4 w-4" />
           {stat._count.result}
         </div>

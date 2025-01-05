@@ -9,15 +9,33 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Modal } from '@/components/ui/modal';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface OrganizationFormType {
   name: string;
 }
 
-const OrganizationCreateForm = () => {
+interface OrganizationCreateFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -41,30 +59,42 @@ const OrganizationCreateForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization Name</FormLabel>
-              <FormControl>
-                <Input
-                  disabled={loading}
-                  placeholder="Enter organization name"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={loading}>
-          Create Organization
-        </Button>
-      </form>
-    </Form>
+    <Modal
+      title="Create Organization"
+      description="Add a new organization to manage your projects"
+      isOpen={isOpen}
+      onClose={onClose}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Organization Name</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading}
+                    placeholder="Enter organization name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              Create Organization
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </Modal>
   );
 };
 

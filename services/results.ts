@@ -1,7 +1,7 @@
 'use server';
 
 import { resultIncludes } from '@/lib/rich-includes';
-import { type VTResult, Prisma } from '@/types';
+import { type VTResult, Prisma, Result } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
@@ -97,13 +97,11 @@ export const upsertResults = async (data: UpsertResultsData) => {
   });
 };
 
-export type UpdateResultData = {
-  projectId: string;
-  engineName: string;
-  lastMessage: string;
-};
+export type UpdateResultData = Partial<
+  Pick<Result, 'lastMessage' | 'disputedAt' | 'disputeCount'>
+>;
 
-export const updateResult = async (data: UpdateResultData) => {
+export const updateResultById = async (resultId: string, data: UpdateResultData) => {
   const { session } = await getAuth();
 
   if (!session) {
@@ -112,13 +110,8 @@ export const updateResult = async (data: UpdateResultData) => {
 
   return await prisma.result.update({
     where: {
-      projectId_engineName: {
-        projectId: data.projectId,
-        engineName: data.engineName,
-      },
+      id: resultId,
     },
-    data: {
-      lastMessage: data.lastMessage,
-    },
+    data,
   });
 };
