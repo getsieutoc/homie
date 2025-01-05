@@ -1,4 +1,4 @@
-import { userIncludes, resultIncludes } from '@/lib/rich-includes';
+import { userIncludes, resultIncludes, tenantIncludes } from '@/lib/rich-includes';
 import { getResultStats } from '@/services/results';
 import { getProjects } from '@/services/projects';
 import { Icons } from '@/components/icons';
@@ -16,6 +16,10 @@ export type UserWithPayload = Prisma.UserGetPayload<{
 
 export type ResultWithPayload = Prisma.ResultGetPayload<{
   include: typeof resultIncludes;
+}>;
+
+export type TenantWithPayload = Prisma.TenantGetPayload<{
+  include: typeof tenantIncludes;
 }>;
 
 export type Stats = Awaited<ReturnType<typeof getResultStats>>;
