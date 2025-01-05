@@ -23,7 +23,7 @@ interface OrganizationCreateFormProps {
   onClose: () => void;
 }
 
-const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
+export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
   isOpen,
   onClose,
 }) => {
@@ -97,5 +97,3 @@ const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
     </Modal>
   );
 };
-
-export default OrganizationCreateForm;
