@@ -5,7 +5,6 @@ import { SidebarTrigger } from '../ui/sidebar';
 import { Separator } from '../ui/separator';
 import { Breadcrumbs } from '../breadcrumbs';
 
-import { UserNav } from './user-nav';
 import { ThemeToggle } from './theme-toggle';
 import { getAuth } from '@/auth';
 
@@ -33,8 +32,6 @@ export const Header = async () => {
         <div className="hidden md:flex">
           <SearchInput />
         </div>
-
-        <UserNav />
 
         <ThemeToggle />
       </div>

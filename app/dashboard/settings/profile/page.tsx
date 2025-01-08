@@ -2,6 +2,8 @@ import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 
+import { UpdateProfileForm } from './update-profile-form';
+
 export const metadata = {
   title: 'Dashboard : Profile',
 };
@@ -16,7 +18,9 @@ export default async function ProfilePage() {
 
         <Separator />
 
-        <div className="space-y-4"></div>
+        <div className="flex">
+          <UpdateProfileForm />
+        </div>
       </div>
     </PageContainer>
   );

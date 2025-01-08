@@ -31,7 +31,6 @@ import {
 } from '@/components/ui/sidebar';
 import {
   BadgeCheck,
-  Bell,
   ChevronRight,
   ChevronsUpDown,
   CreditCard,
@@ -42,6 +41,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { navItems } from '@/lib/constants';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 import { Icons } from '../icons';
@@ -181,22 +181,20 @@ export const AppSidebar = () => {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck />
-                    Account
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings/profile">
+                      <BadgeCheck className="mr-2 size-4" />
+                      Profile
+                    </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard />
+                  <DropdownMenuItem disabled>
+                    <CreditCard className="mr-2 size-4" />
                     Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Notifications
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOut className="mr-2 size-4" />
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -19,24 +19,16 @@ const lato = Lato({
   display: 'swap',
 });
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { session, user } = await getAuth();
 
   return (
-    <html
-      lang="en"
-      className={`${lato.className}`}
-      suppressHydrationWarning={true}
-    >
+    <html lang="en" className={`${lato.className}`} suppressHydrationWarning={true}>
       <body className={'overflow-hidden'}>
         <NextTopLoader showSpinner={false} />
         <GeneralProviders session={session}>
-          <Toaster />
           {session && !user ? <SignOutTrigger /> : children}
+          <Toaster />
         </GeneralProviders>
       </body>
     </html>

@@ -1,14 +1,13 @@
 'use client';
 
+import { updateOrganization } from '@/services/organization';
 import { TenantWithPayload } from '@/types';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useForm } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { updateOrganization } from '@/services/organization';
+import { z } from 'zod';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Organization name is required'),
