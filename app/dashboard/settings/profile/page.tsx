@@ -1,12 +1,6 @@
-import { SearchParams } from 'nuqs/parsers';
 import PageContainer from '@/components/layout/page-container';
-import ProfileCreateForm from './_components/profile-create-form';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-
-// type pageProps = {
-//   searchParams: SearchParams;
-// };
 
 export const metadata = {
   title: 'Dashboard : Profile',
