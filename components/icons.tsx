@@ -1,6 +1,8 @@
 import {
   AlertTriangle,
   ArrowRight,
+  Badge,
+  BadgeCheck,
   Building,
   Check,
   ChevronLeft,
@@ -8,6 +10,8 @@ import {
   CircuitBoardIcon,
   Command,
   CreditCard,
+  Circle,
+  CircleCheck,
   File,
   FileText,
   FolderKanban,
@@ -38,6 +42,10 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  badge: Badge,
+  badgeCheck: BadgeCheck,
+  circle: Circle,
+  circleCheck: CircleCheck,
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,

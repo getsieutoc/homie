@@ -8,40 +8,50 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useEffect, useState, useForm, useRouter } from '@/hooks';
+import { useEffect, useState, useForm } from '@/hooks';
 import { createOrganization } from '@/services/organization';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
+import { z } from 'zod';
 
-interface OrganizationFormType {
-  name: string;
-}
+const defaultValues = {
+  name: '',
+};
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Organization name is required'),
+});
+
+type Inputs = z.infer<typeof formSchema>;
 
 interface OrganizationCreateFormProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
   isOpen,
   onClose,
+  onSuccess,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<OrganizationFormType>({
-    defaultValues: {
-      name: '',
-    },
+  const form = useForm<Inputs>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
   });
 
-  const onSubmit = async (data: OrganizationFormType) => {
+  const onSubmit = async (data: Inputs) => {
     try {
       setLoading(true);
       await createOrganization(data);
+      onClose();
+      onSuccess?.();
     } catch (error) {
       console.error(error);
     } finally {

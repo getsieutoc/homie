@@ -1,8 +1,8 @@
 'use server';
 
+import { MembershipRole, MembershipStatus, Prisma } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/types';
 import { getAuth } from '@/auth';
 
 export async function getMyOrganizations() {
@@ -82,7 +82,16 @@ export async function createOrganization(data: Prisma.TenantCreateInput) {
     }
 
     const newOrganization = await prisma.tenant.create({
-      data,
+      data: {
+        ...data,
+        memberships: {
+          create: {
+            userId: session.user.id,
+            role: 'OWNER',
+            status: 'JOINED',
+          },
+        },
+      },
     });
 
     revalidatePath('/settings/organization');
@@ -119,20 +128,24 @@ export async function switchOrganization(organizationId: string) {
   try {
     const { session, activeMembership } = await getAuth();
 
+    console.log('session', { session, activeMembership });
+
     if (!session || !activeMembership) {
       throw new Error('Unauthorized');
     }
 
     const { id: activeMembershipId } = activeMembership;
 
-    const switchedOrganization = await prisma.membership.update({
+    const updatedMembership = await prisma.membership.update({
       where: { id: activeMembershipId },
       data: { tenantId: organizationId },
     });
 
     revalidatePath('/dashboard');
 
-    return switchedOrganization;
+    console.log('Switched:', updatedMembership);
+
+    return updatedMembership;
   } catch (error) {
     console.error('Error switching organization:', error);
   }

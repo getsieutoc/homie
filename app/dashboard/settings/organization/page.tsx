@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
 
-import { UpdateOrganizationForm } from './_components/update-organization-form';
+import { UpdateOrganizationForm } from './update-organization-form';
 
 type PageProps = {
   searchParams: Record<string, string | string[] | undefined>;
