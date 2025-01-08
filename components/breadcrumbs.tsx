@@ -20,8 +20,9 @@ import { switchOrganization } from '@/services/organization';
 import { type Organization } from '@/types';
 import { useBreadcrumbs } from '@/hooks';
 import { Fragment, useState } from 'react';
-import { Icons } from './icons';
+
 import { OrganizationCreateForm } from './org-create-form';
+import { Icons } from './icons';
 
 type Props = {
   organizations?: Organization[];
@@ -41,7 +42,8 @@ export function Breadcrumbs({ organizations, currentOrganization }: Props) {
     setIsCreateOrgModalOpen(true);
   };
 
-  const handleOrgCreated = () => {
+  const handleOrgCreated = async (newOrg: Organization) => {
+    await switchOrganization(newOrg.id);
     setIsCreateOrgModalOpen(false);
   };
 

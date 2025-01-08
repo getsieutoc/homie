@@ -1,6 +1,6 @@
 'use server';
 
-import { MembershipRole, MembershipStatus, Prisma } from '@/types';
+import { MembershipRole, MembershipStatus, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
@@ -87,8 +87,8 @@ export async function createOrganization(data: Prisma.TenantCreateInput) {
         memberships: {
           create: {
             userId: session.user.id,
-            role: 'OWNER',
-            status: 'JOINED',
+            role: MembershipRole.OWNER,
+            status: MembershipStatus.JOINED,
           },
         },
       },
@@ -124,29 +124,51 @@ export async function deleteOrganization(id: string) {
   }
 }
 
-export async function switchOrganization(organizationId: string) {
+export async function switchOrganization(tenantId: string) {
   try {
     const { session, activeMembership } = await getAuth();
-
-    console.log('session', { session, activeMembership });
 
     if (!session || !activeMembership) {
       throw new Error('Unauthorized');
     }
 
-    const { id: activeMembershipId } = activeMembership;
-
-    const updatedMembership = await prisma.membership.update({
-      where: { id: activeMembershipId },
-      data: { tenantId: organizationId },
+    // Change current membership into 'JOINED' status
+    await prisma.membership.update({
+      where: {
+        tenantId_userId: {
+          userId: session.user.id,
+          tenantId: activeMembership.tenantId,
+        },
+      },
+      data: {
+        status: MembershipStatus.JOINED,
+      },
     });
 
-    revalidatePath('/dashboard');
+    // Change the target membership into 'ACTIVE' status
+    const membershipToActivate = await prisma.membership.upsert({
+      where: {
+        tenantId_userId: {
+          userId: session.user.id,
+          tenantId: tenantId,
+        },
+      },
+      create: {
+        userId: session.user.id,
+        tenantId: tenantId,
+        role: MembershipRole.OWNER,
+        status: MembershipStatus.ACTIVE,
+      },
+      update: {
+        status: MembershipStatus.ACTIVE,
+      },
+    });
 
-    console.log('Switched:', updatedMembership);
+    revalidatePath('/dashboard', 'layout');
 
-    return updatedMembership;
+    return membershipToActivate;
   } catch (error) {
     console.error('Error switching organization:', error);
+    throw error;
   }
 }

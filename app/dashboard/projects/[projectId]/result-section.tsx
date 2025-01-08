@@ -28,8 +28,6 @@ export const ResultSection = ({
   items,
   project,
 }: DetailedResults[number] & { project: Project }) => {
-  console.log({ type, items });
-
   const isMalicious = ['malicious', 'suspicious', 'phishing'].includes(type);
   const isClean = type === 'clean';
 

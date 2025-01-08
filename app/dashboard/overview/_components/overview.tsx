@@ -20,8 +20,6 @@ import { useAuth } from '@/hooks/use-auth';
 export default function OverViewPage() {
   const { user } = useAuth();
 
-  console.log({ user });
-
   return (
     <PageContainer scrollable>
       <div className="space-y-2">

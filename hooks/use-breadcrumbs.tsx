@@ -24,7 +24,6 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
 
 export function useBreadcrumbs() {
   const pathname = usePathname();
-  console.log('useBreadcrumbs: pathname', pathname);
 
   const breadcrumbs = useMemo(() => {
     // Check if we have a custom mapping for this exact path

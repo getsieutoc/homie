@@ -41,7 +41,6 @@ export const generateEmail = async (input: ResultInput) => {
     });
 
     for await (const partialObject of partialObjectStream) {
-      console.log('partialObject', partialObject);
       stream.update(partialObject);
     }
 

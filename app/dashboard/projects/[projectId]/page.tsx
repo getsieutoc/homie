@@ -32,7 +32,6 @@ export default async function SingleProjectPage({ params }: PageProps) {
       if (b === 'clean') return -1;
       return a.localeCompare(b);
     });
-  console.log({ resultTypes });
 
   // Fetch detailed results for each result type
   const detailedResults = await Promise.all(

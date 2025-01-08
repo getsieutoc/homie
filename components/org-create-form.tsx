@@ -8,12 +8,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useEffect, useState, useForm } from '@/hooks';
 import { createOrganization } from '@/services/organization';
+import { useEffect, useState, useForm } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
+import { Organization } from '@/types';
 import { z } from 'zod';
 
 const defaultValues = {
@@ -29,7 +30,7 @@ type Inputs = z.infer<typeof formSchema>;
 interface OrganizationCreateFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (o: Organization) => void;
 }
 
 export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
@@ -49,9 +50,13 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
   const onSubmit = async (data: Inputs) => {
     try {
       setLoading(true);
-      await createOrganization(data);
+      const newOrg = await createOrganization(data);
+
+      if (newOrg && onSuccess) {
+        onSuccess(newOrg);
+      }
+
       onClose();
-      onSuccess?.();
     } catch (error) {
       console.error(error);
     } finally {

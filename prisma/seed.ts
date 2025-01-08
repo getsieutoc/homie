@@ -21,7 +21,7 @@ async function main() {
   });
 
   if (count === 0) {
-    console.log('Vendors table is empty. Starting to seed vendors...');
+    console.info('Vendors table is empty. Starting to seed vendors...');
     const vendors = await readVendorList();
 
     // Create vendors
@@ -37,9 +37,9 @@ async function main() {
       )
     );
 
-    console.log(`✅ Successfully seeded ${createdVendors.length} vendors`);
+    console.info(`✅ Successfully seeded ${createdVendors.length} vendors`);
   } else {
-    console.log('Vendors table is not empty. Skipping seed...');
+    console.info('Vendors table is not empty. Skipping seed...');
   }
 }
 
