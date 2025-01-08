@@ -7,28 +7,20 @@ import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
 
 import { UpdateOrganizationForm } from './update-organization-form';
-
-type PageProps = {
-  searchParams: Record<string, string | string[] | undefined>;
-};
+import { getOrganizationById } from '@/services/organization';
 
 export const metadata = {
   title: 'Organization Settings | Homie',
 };
 
-export default async function Page({ searchParams }: PageProps) {
-  const { user, activeMembership } = await getAuth();
+export default async function OrganizationPage() {
+  const { session, activeMembership } = await getAuth();
 
-  if (!user) {
+  if (!session) {
     redirect('/auth');
   }
 
-  const tenant = await prisma.tenant.findUnique({
-    where: {
-      id: activeMembership?.tenantId,
-    },
-    include: tenantIncludes,
-  });
+  const tenant = await getOrganizationById(activeMembership?.tenantId);
 
   if (!tenant) {
     return <div>No organization found</div>;

@@ -1,6 +1,7 @@
 'use server';
 
 import { MembershipRole, MembershipStatus, Prisma } from '@prisma/client';
+import { tenantIncludes } from '@/lib/rich-includes';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
@@ -43,11 +44,13 @@ export async function getOrganizationById(id?: string) {
 
     const organization = await prisma.tenant.findUnique({
       where: { id },
+      include: tenantIncludes,
     });
 
     return organization;
   } catch (error) {
     console.error('Error fetching organization:', error);
+    throw error;
   }
 }
 

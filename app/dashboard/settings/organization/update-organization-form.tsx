@@ -1,6 +1,7 @@
 'use client';
 
 import { TenantWithPayload } from '@/types';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,6 +24,7 @@ export function UpdateOrganizationForm({ data }: Props) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(formSchema),
@@ -30,6 +32,12 @@ export function UpdateOrganizationForm({ data }: Props) {
       name: data.name,
     },
   });
+
+  useEffect(() => {
+    reset({
+      name: data.name,
+    });
+  }, [data]);
 
   const onSubmit = async (values: Inputs) => {
     try {
