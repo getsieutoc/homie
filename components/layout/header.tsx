@@ -1,4 +1,4 @@
-import React from 'react';
+import { getMyOrganizations, getOrganizationById } from '@/services/organization';
 
 import { SearchInput } from '../search-input';
 import { SidebarTrigger } from '../ui/sidebar';
@@ -7,8 +7,15 @@ import { Breadcrumbs } from '../breadcrumbs';
 
 import { UserNav } from './user-nav';
 import { ThemeToggle } from './theme-toggle';
+import { getAuth } from '@/auth';
 
-export const Header = () => {
+export const Header = async () => {
+  const { activeMembership } = await getAuth();
+
+  const organizations = await getMyOrganizations();
+
+  const currentOrganization = await getOrganizationById(activeMembership?.tenantId);
+
   return (
     <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2 px-4">
@@ -16,7 +23,10 @@ export const Header = () => {
 
         <Separator orientation="vertical" className="mr-2 h-4" />
 
-        <Breadcrumbs />
+        <Breadcrumbs
+          organizations={organizations}
+          currentOrganization={currentOrganization}
+        />
       </div>
 
       <div className="flex items-center gap-2 px-4">

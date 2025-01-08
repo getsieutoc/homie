@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components/ui/button';
+
 import {
   Form,
   FormControl,
@@ -8,11 +8,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useEffect, useState, useForm, useRouter } from '@/hooks';
+import { createOrganization } from '@/services/organization';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 interface OrganizationFormType {
   name: string;
@@ -29,13 +29,6 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -48,15 +41,21 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
   const onSubmit = async (data: OrganizationFormType) => {
     try {
       setLoading(true);
-      // TODO: Add API call to create organization
-      router.refresh();
-      router.push('/dashboard/organizations');
+      await createOrganization(data);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <Modal

@@ -1,10 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import PageContainer from '@/components/layout/page-container';
+import { tenantIncludes } from '@/lib/rich-includes';
+import { Heading } from '@/components/ui/heading';
 import { Label } from '@/components/ui/label';
+import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
-import { tenantIncludes } from '@/lib/rich-includes';
+
+import { UpdateOrganizationForm } from './_components/update-organization-form';
 
 type PageProps = {
   searchParams: Record<string, string | string[] | undefined>;
@@ -18,10 +20,9 @@ export default async function Page({ searchParams }: PageProps) {
   const { user, activeMembership } = await getAuth();
 
   if (!user) {
-    return <div>Not authenticated</div>;
+    redirect('/auth');
   }
 
-  // Get current tenant through user's membership
   const tenant = await prisma.tenant.findUnique({
     where: {
       id: activeMembership?.tenantId,
@@ -34,16 +35,17 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Organization Settings</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Organization Name</Label>
-            <Input id="name" name="name" defaultValue={tenant.name} />
-          </div>
+    <PageContainer>
+      <div className="space-y-4">
+        <div className="flex items-start justify-between">
+          <Heading
+            title="Organization Settings"
+            description="Manage organization settings"
+          />
+        </div>
+
+        <div className="space-y-4">
+          <UpdateOrganizationForm data={tenant} />
 
           <div className="space-y-2">
             <Label>Projects</Label>
@@ -67,12 +69,8 @@ export default async function Page({ searchParams }: PageProps) {
               ))}
             </div>
           </div>
-
-          <div className="flex justify-end">
-            <Button type="submit">Save Changes</Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </PageContainer>
   );
 }

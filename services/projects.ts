@@ -160,29 +160,19 @@ export const upsertProject = async (data: UpsertProjectData) => {
   };
 };
 
-export const deleteProject = async (id: string) => {
-  const { session, activeMembership } = await getAuth();
+export const deleteProject = async (projectId: string) => {
+  const { session } = await getAuth();
 
-  if (!session || !activeMembership) {
+  if (!session) {
     throw new Error('Unauthorized');
   }
 
-  const { tenantId } = activeMembership;
-
-  const foundProject = await prisma.project.findUniqueOrThrow({
-    where: { id, tenantId },
+  const deletedProject = await prisma.project.delete({
+    where: { id: projectId },
   });
 
-  const deletedProject = await prisma.project.update({
-    where: { id },
-    data: {
-      domain: `${foundProject.domain}-deleted-${Date.now()}`,
-      deletedAt: new Date(),
-    },
-  });
-
-  if (foundProject.scheduleId) {
-    await triggerSchedules.del(foundProject.scheduleId);
+  if (deletedProject.scheduleId) {
+    await triggerSchedules.del(deletedProject.scheduleId);
   }
 
   revalidatePath('/dashboard/projects');

@@ -293,3 +293,9 @@ export type VTDomainError = {
 };
 
 export type VTDomainResponse = VTDomainResult | VTDomainError;
+
+export interface Organization {
+  id: string;
+  name: string;
+  // Add other organization properties as needed
+}
