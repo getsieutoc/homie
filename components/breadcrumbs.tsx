@@ -79,7 +79,7 @@ export function Breadcrumbs({ organizations, currentOrganization }: Props) {
                       ))}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleAddNewOrganization}>
-                        <Plus className="mr-1 h-4 w-4" />
+                        <Plus className="mr-2 h-4 w-4" />
                         Add new organization
                       </DropdownMenuItem>
                     </DropdownMenuContent>
