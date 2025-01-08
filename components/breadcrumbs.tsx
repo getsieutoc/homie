@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Slash, ChevronDown, Plus } from 'lucide-react';
 import { switchOrganization } from '@/services/organization';
-import { Button } from '@/components/ui/button';
 import { type Organization } from '@/types';
 import { useBreadcrumbs } from '@/hooks';
 import { Fragment, useState } from 'react';
@@ -34,6 +33,10 @@ export function Breadcrumbs({ organizations, currentOrganization }: Props) {
   const items = useBreadcrumbs();
 
   const handleOrgChange = async (orgId: string) => {
+    if (items.length > 2) {
+      return;
+    }
+
     await switchOrganization(orgId);
   };
 
@@ -59,9 +62,14 @@ export function Breadcrumbs({ organizations, currentOrganization }: Props) {
               {index === 0 ? (
                 <BreadcrumbItem className="hidden md:block">
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center gap-1 hover:text-foreground/80">
+                    <DropdownMenuTrigger
+                      disabled={items.length > 2}
+                      className={`flex items-center gap-1 ${
+                        items.length <= 2 ? 'hover:text-foreground/80' : ''
+                      }`}
+                    >
                       {currentOrganization?.name}
-                      <ChevronDown className="h-4 w-4" />
+                      {items.length <= 2 && <ChevronDown className="h-4 w-4" />}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                       {organizations?.map((org) => (

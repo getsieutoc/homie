@@ -38,9 +38,9 @@ import {
   LogOut,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { navItems } from '@/lib/constants';
+import { useAuth, useEffect, useState } from '@/hooks';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/hooks/use-auth';
+import { navItems } from '@/lib/constants';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -55,12 +55,17 @@ export const company = {
 export const AppSidebar = () => {
   const pathname = usePathname();
   const { user, session, isLoading } = useAuth();
+  const [isClient, setIsClient] = useState(false);
 
-  if (isLoading) {
-    return null; // or a loading spinner
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient || isLoading) {
+    return null;
   }
 
-  if (!session) {
+  if (!session || !user) {
     return null;
   }
 
