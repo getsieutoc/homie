@@ -8,6 +8,7 @@ import { getAuth } from '@/auth';
 
 import { UpdateOrganizationForm } from './update-organization-form';
 import { getOrganizationById } from '@/services/organization';
+import { Separator } from '@/components/ui/separator';
 
 export const metadata = {
   title: 'Organization Settings | Homie',
@@ -35,6 +36,8 @@ export default async function OrganizationPage() {
             description="Manage organization settings"
           />
         </div>
+
+        <Separator />
 
         <div className="space-y-4">
           <UpdateOrganizationForm data={tenant} />

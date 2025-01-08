@@ -117,7 +117,9 @@ export function VendorListing({ vendors, totalItems }: Props) {
           cell: ({ row }) => {
             const tenantId = row.original.tenantId as string | null;
             return (
-              <Badge variant="outline">{tenantId ? 'Organization' : 'Default'}</Badge>
+              <Badge variant="outline" colorScheme="success">
+                {tenantId ? 'Organization' : 'Default'}
+              </Badge>
             );
           },
         },
