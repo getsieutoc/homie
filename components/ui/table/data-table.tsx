@@ -112,20 +112,40 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  onClick={() => onRowClick?.(row)}
-                  className={onRowClick ? 'cursor-pointer' : undefined}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+                  const { tagName } = e.target as HTMLElement;
+
+                  e.preventDefault();
+
+                  const isAllowedSelect = !['a', 'button', 'svg'].includes(
+                    tagName.toLowerCase()
+                  );
+
+                  if (isAllowedSelect) {
+                    const toggleSelect = row.getToggleSelectedHandler();
+                    toggleSelect(e);
+                  }
+
+                  if (onRowClick) {
+                    onRowClick(row);
+                  }
+                };
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    onClick={handleRowClick}
+                    className={onRowClick ? 'cursor-pointer' : undefined}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">

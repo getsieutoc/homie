@@ -56,13 +56,6 @@ export const CellAction = ({ data }: Props) => {
         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <SendHorizontal className="mr-2 h-4 w-4" /> Send Dispute
-          </DropdownMenuItem>
           <DropdownMenuItem disabled onClick={(e) => e.stopPropagation()}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

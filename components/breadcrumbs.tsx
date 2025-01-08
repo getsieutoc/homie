@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Slash, ChevronDown, Plus } from 'lucide-react';
 import { switchOrganization } from '@/services/organization';
+import { Button } from '@/components/ui/button';
 import { type Organization } from '@/types';
 import { useBreadcrumbs } from '@/hooks';
 import { Fragment, useState } from 'react';
@@ -69,9 +70,9 @@ export function Breadcrumbs({ organizations, currentOrganization }: Props) {
                           onClick={() => handleOrgChange(org.id)}
                         >
                           {currentOrganization?.id === org.id ? (
-                            <Icons.circleCheck className="mr-1 h-4 w-4 text-green-500" />
+                            <Icons.circleCheck className="mr-2 h-4 w-4 text-green-500" />
                           ) : (
-                            <Icons.circle className="mr-1 h-4 w-4 text-gray-500" />
+                            <Icons.circle className="mr-2 h-4 w-4 text-gray-500" />
                           )}
                           {org.name}
                         </DropdownMenuItem>

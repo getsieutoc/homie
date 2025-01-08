@@ -5,7 +5,7 @@ export default async function Settings() {
   const session = await auth();
 
   if (!session?.user) {
-    return redirect('/');
+    redirect('/');
   } else {
     redirect('/dashboard/settings/profile');
   }
