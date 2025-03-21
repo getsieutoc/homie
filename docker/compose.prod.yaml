@@ -1,0 +1,52 @@
+name: homie
+
+services:
+  homie-nextjs:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        - AUTH_SECRET=${AUTH_SECRET}
+        - AUTH_URL=${AUTH_URL}
+        - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@homie-postgres:5432/postgres?schema=public
+        - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+        - POSTMARK_API_KEY=${POSTMARK_API_KEY}
+        - FROM_EMAIL=${FROM_EMAIL}
+        - TRIGGER_SECRET_KEY=${TRIGGER_SECRET_KEY}
+        - OPENAI_API_KEY=${OPENAI_API_KEY}
+        - OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL}
+        - OPENAI_MODEL=${OPENAI_MODEL}
+    expose:
+      - 3000
+    networks:
+      - dokploy-network
+    depends_on:
+      homie-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  homie-postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    expose:
+      - 5432
+    volumes:
+      - homie-postgres-data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  dokploy-network:
+    external: true
+
+volumes:
+  homie-postgres-data:
