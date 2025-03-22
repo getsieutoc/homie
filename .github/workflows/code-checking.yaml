@@ -1,0 +1,39 @@
+name: Code Checking
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  code-checking:
+    name: Lint and Typecheck
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+          pnpm prisma generate
+
+      - name: Linting
+        run: pnpm lint
+
+      - name: Checking TypeScript
+        run: pnpm typecheck

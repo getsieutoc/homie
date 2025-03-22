@@ -1,0 +1,37 @@
+name: Prisma Production
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'prisma/**'
+
+jobs:
+  prisma-production:
+    if: >-
+      github.event.pull_request.user.login != 'renovate' &&
+      github.event.pull_request.user.login != 'renovate[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Deploy Migrations
+        run: pnpm prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}

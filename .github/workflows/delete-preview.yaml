@@ -1,0 +1,39 @@
+name: Delete Preview
+
+on:
+  pull_request:
+    types:
+      - closed
+
+env:
+  PR_NUMBER: ${{ github.event.number }}
+
+jobs:
+  delete-preview:
+    name: Delete Preview
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Find Current Compose
+        run: |
+          PROJECT_RESPONE=$(curl -X GET '${{ vars.DOKPLOY_URL }}/api/project.one?projectId=${{ vars.PROJECT_ID }}' \
+          -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}"
+          )
+          PROJECT_RESPONE_ESCAPED="${PROJECT_RESPONE//$'\n'/\\n}"
+          echo "COMPOSE_ID=$(echo $PROJECT_RESPONE_ESCAPED | jq -r '.compose[] | select(.name == "pr-${{ env.PR_NUMBER }}") .composeId')" >> $GITHUB_ENV
+
+      - name: Delete Compose
+        run: |
+          curl -X POST '${{ vars.DOKPLOY_URL }}/api/compose.delete' \
+          -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "deleteVolumes": true,
+            "composeId":"${{ env.COMPOSE_ID }}"
+           }'

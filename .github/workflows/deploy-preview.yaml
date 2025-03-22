@@ -1,0 +1,114 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+
+env:
+  ORG_NAME: getsieutoc
+  REPO_NAME: homie
+  COMPOSE_PATH: './docker-compose/production.yaml'
+  PR_NUMBER: ${{ github.event.number }}
+  DOMAIN: pr-${{ github.event.number }}.sieutoc.app
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Generate secrets
+        id: generate-secrets
+        run: |
+          echo "POSTGRES_PASSWORD=$(LC_CTYPE=C tr -d -c '[:alnum:]' </dev/urandom | head -c 15)" >> $GITHUB_ENV
+          echo "POSTGRES_PORT=$(shuf -i 55000-55999 -n 1)" >> $GITHUB_ENV
+          echo "BETTER_AUTH_SECRET=$(openssl rand -base64 32)" >> $GITHUB_ENV
+
+      - name: Convert Env String
+        id: convert-env
+        run: |
+          ENV_STRING_RAW=$(cat << 'EOF'
+          DOMAIN=${{ env.DOMAIN }}
+          POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_PORT=${{ env.POSTGRES_PORT }}
+          BETTER_AUTH_SECRET=${{ env.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL=${{ 'https://${DOMAIN}' }}
+          NEXT_PUBLIC_BASE_URL=${{ 'https://${DOMAIN}' }}
+          POSTMARK_API_KEY=${{ '${{project.POSTMARK_API_KEY}}' }}
+          FROM_EMAIL=${{ '${{project.FROM_EMAIL}}' }}
+          EOF
+          )
+          ENV_STRING_ESCAPED="${ENV_STRING_RAW//$'\n'/\\n}"
+          echo "env_string=${ENV_STRING_ESCAPED}" >> $GITHUB_OUTPUT
+
+      - name: Create New Compose
+        run: |
+          CREATED_RESPONSE=$(curl -X POST "${{ vars.DOKPLOY_URL }}/api/compose.create" \
+          -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "name": "pr-${{ env.PR_NUMBER }}",
+            "projectId": "${{ vars.PROJECT_ID }}",
+            "appName":"${{ env.REPO_NAME }}-pr-${{ env.PR_NUMBER }}",
+            "composeType": "docker-compose",
+            "serverId": null
+          }')
+
+          echo "COMPOSE_ID=$(echo $CREATED_RESPONSE | jq -r '.composeId')" >> $GITHUB_ENV
+
+      - name: Update Compose
+        run: |
+          curl -X POST '${{ vars.DOKPLOY_URL }}/api/compose.update' \
+          -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "env": "${{ steps.convert-env.outputs.env_string }}",
+            "composePath":"${{ env.COMPOSE_PATH }}",
+            "composeId":"${{ env.COMPOSE_ID }}",
+            "name": "pr-${{ env.PR_NUMBER }}",
+            "projectId": "${{ vars.PROJECT_ID }}",
+            "appName":"${{ env.REPO_NAME }}-pr-${{ env.PR_NUMBER }}",
+            "githubId":"${{ vars.NODE_GITHUB_ID }}",
+            "branch":"${{ env.BRANCH_NAME }}",
+            "repository":"${{ env.REPO_NAME }}",
+            "owner":"${{ env.ORG_NAME }}",
+            "sourceType":"github",
+            "composeType": "docker-compose",
+            "composeStatus":"idle",
+            "serverId": null
+          }'
+
+      - name: Create New Domain
+        run: |
+          curl -X POST '${{ vars.DOKPLOY_URL }}/api/domain.create' \
+          -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "host": "${{ env.DOMAIN }}",
+            "path": "/",
+            "port": 3000,
+            "https": true,
+            "applicationId": null,
+            "certificateType": "letsencrypt",
+            "composeId": "${{ env.COMPOSE_ID }}",
+            "serviceName": "${{ env.REPO_NAME }}-nextjs",
+            "domainType": "compose"
+          }'
+
+      - name: Deploy Compose
+        run: |
+          curl -X POST '${{ vars.DOKPLOY_URL }}/api/compose.deploy' \
+          -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "composeId":"${{ env.COMPOSE_ID }}"
+           }'
