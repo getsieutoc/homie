@@ -1,65 +1,155 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/9113740/201498864-2a900c64-d88f-4ed4-b5cf-770bcb57e1f5.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/9113740/201498152-b171abb8-9225-487a-821c-6ff49ee48579.png">
-</picture>
+# Homie
 
-<div align="center"><strong>Next.js 14 Admin Dashboard Starter Template With Shadcn-ui</strong></div>
-<div align="center">Built with the Next.js App Router</div>
-<br />
-<div align="center">
-<a href="https://next-shadcn-dashboard-starter.vercel.app">View Demo</a>
-<span>
-</div>
+A multi-tenant security scanning platform for domain security management.
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## Overview
 
-This is a starter template using the following stack:
+Homie is a compreh eensive security scanning platform designed to help organizations monitor and manage domain security. It provides a centralized dashboard for tracking security scans across multiple domains and projects, with a focus on threat detection and management through VirusTotal integration.
 
-- Framework - [Next.js 14](https://nextjs.org/13)
-- Language - [TypeScript](https://www.typescriptlang.org)
-- Styling - [Tailwind CSS](https://tailwindcss.com)
-- Components - [Shadcn-ui](https://ui.shadcn.com)
-- Schema Validations - [Zod](https://zod.dev)
-- State Management - [Zustand](https://zustand-demo.pmnd.rs)
-- Search params state manager - [Nuqs](https://nuqs.47ng.com/)
-- Auth - [Auth.js](https://authjs.dev/)
-- Tables - [Tanstack Tables](https://ui.shadcn.com/docs/components/data-table)
-- Forms - [React Hook Form](https://ui.shadcn.com/docs/components/form)
-- Command+k interface - [kbar](https://kbar.vercel.app/)
-- Linting - [ESLint](https://eslint.org)
-- Pre-commit Hooks - [Husky](https://typicode.github.io/husky/)
-- Formatting - [Prettier](https://prettier.io)
+### Key Features
 
-_If you are looking for a React admin dashboard starter, here is the [repo](https://github.com/Kiranism/react-shadcn-dashboard-starter)._
+- 🔒 **Domain Security Scanning**: Automated checks using VirusTotal API
+- 🏢 **Multi-tenant Management**: Organization-based project isolation
+- 🚨 **Threat Detection**: Identification of malicious or suspicious domains
+- 📊 **Analytics Dashboard**: Visualization of security scan results
+- 👥 **Team Collaboration**: Role-based access control within organizations
+- 🔄 **Vendor Management**: Track security vendor assessments
 
-## Pages
+## Technology Stack
 
-| Pages                                                                                   | Specifications                                                                                                                      |
-| :-------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| [Signup](https://next-shadcn-dashboard-starter.vercel.app/)                             | Authentication with **NextAuth** supports Social logins and email logins (Enter dummy email for demo).                              |
-| [Dashboard](https://next-shadcn-dashboard-starter.vercel.app/dashboard)                 | Cards with recharts graphs for analytics.                                                                                           |
-| [Employee](https://next-shadcn-dashboard-starter.vercel.app/dashboard/employee)         | Tanstack tables with server side searching, filter, pagination by Nuqs which is a Type-safe search params state manager in nextjs). |
-| [Employee/new](https://next-shadcn-dashboard-starter.vercel.app/dashboard/employee/new) | A Employee Form with shadcn form (react-hook-form + zod).                                                                           |
-| [Product](https://next-shadcn-dashboard-starter.vercel.app/dashboard/product)           | Tanstack tables with server side searching, filter, pagination by Nuqs which is a Type-safe search params state manager in nextjs   |
-| [Product/new](https://next-shadcn-dashboard-starter.vercel.app/dashboard/product/new)   | A Product Form with shadcn form (react-hook-form + zod).                                                                            |
-| [Profile](https://next-shadcn-dashboard-starter.vercel.app/dashboard/profile)           | Mutistep dynamic forms using react-hook-form and zod for form validation.                                                           |
-| [Not Found](https://next-shadcn-dashboard-starter.vercel.app/dashboard/notfound)        | Not Found Page Added in the root level                                                                                              |
-| -                                                                                       | -                                                                                                                                   |
+### Frontend
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Components**: Shadcn UI (based on Radix UI)
+- **State Management**: Jotai
+- **Form Handling**: React Hook Form with Zod validation
+- **Data Fetching**: SWR
+- **Visualization**: Recharts
+- **Command Interface**: kbar
+
+### Backend
+
+- **API**: Next.js API routes with server actions
+- **Authentication**: Auth.js v5
+- **Database ORM**: Prisma
+- **Database**: PostgreSQL
+- **Background Jobs**: Trigger.dev
+- **Security Scanning**: VirusTotal API
+
+### Development & Tooling
+
+- **Package Manager**: pnpm
+- **Testing**: Vitest, React Testing Library
+- **Containerization**: Docker
+- **Linting & Formatting**: ESLint, Prettier
 
 ## Getting Started
 
-Follow these steps to clone the repository and start the development server:
+### Prerequisites
 
-- `git clone https://github.com/Kiranism/next-shadcn-dashboard-starter.git`
-- `npm install`
-- Create a `.env.local` file by copying the example environment file:
-  `cp env.example.txt .env.local`
-- Add the required environment variables to the `.env.local` file.
-- `npm run dev`
+- Node.js 18+
+- pnpm 8+
+- Docker and Docker Compose (for local development)
+- VirusTotal API key
 
-You should now be able to access the application at http://localhost:3000.
+### Environment Setup
 
-> [!WARNING]  
-> After cloning or forking the repository, be cautious when pulling or syncing with the latest changes, as this may result in breaking conflicts.
+1. Clone the repository:
 
-Cheers! 🥂
+   ```bash
+   git clone https://github.com/your-org/homie.git
+   cd homie
+   ```
+
+2. Copy the example environment files:
+
+   ```bash
+   cp env.example .env
+   cp docker/env.example docker/.env
+   ```
+
+3. Update the environment files with your configuration values, including:
+   - Database connection details
+   - NextAuth secret
+   - VirusTotal API key
+   - SMTP settings for email
+
+### Installation
+
+#### Local Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run database migrations on the first time OR when schema has changes
+pnpm prisma migrate dev
+
+# Seed the database (optional)
+pnpm prisma db seed
+
+# Start the development server
+pnpm dev
+
+# The application will be available at http://localhost:3000
+```
+
+## Project Structure
+
+```txt
+homie/
+├── app/                  # Next.js App Router pages and layouts
+│   ├── api/              # API routes
+│   ├── auth/             # Authentication pages
+│   ├── dashboard/        # Dashboard pages and components
+│   └── ...
+├── components/           # Reusable UI components
+│   ├── ui/               # Shadcn UI components
+│   ├── layout/           # Layout components
+│   └── ...
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility functions and configuration
+├── prisma/               # Prisma schema and migrations
+├── public/               # Static assets
+├── services/             # Business logic services
+└── types/                # TypeScript type definitions
+```
+
+### System Architecture
+
+Homie uses a layered architecture:
+
+- **UI Layer**: Next.js App Router pages and components
+- **API Layer**: Next.js API routes and server actions
+- **Service Layer**: Business logic for features
+- **Data Layer**: Prisma ORM with PostgreSQL database
+
+### Data Model
+
+- **User**: System user with authentication details
+- **Tenant**: Organization that owns projects and vendors
+- **Membership**: Relationship between Users and Tenants with roles
+- **Project**: Container for domains to be scanned
+- **Result**: Security scan results from vendors
+- **Vendor**: Security vendors providing domain assessments
+
+## Current Status
+
+| Component               | Status | Notes                       |
+| ----------------------- | ------ | --------------------------- |
+| Core Infrastructure     | 90%    | Mostly complete             |
+| User Management         | 75%    | Basic functionality working |
+| Organization Management | 70%    | Core features implemented   |
+| Project Management      | 80%    | Main features complete      |
+| Security Scanning       | 60%    | Basic integration working   |
+| Results Management      | 40%    | Needs enhancement           |
+| Analytics               | 30%    | Basic components in place   |
+| Reporting               | 15%    | Early development           |
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
