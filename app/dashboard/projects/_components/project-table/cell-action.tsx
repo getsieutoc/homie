@@ -11,7 +11,7 @@ import {
 import { Edit, MoreHorizontal, Trash, SendHorizontal } from 'lucide-react';
 import { type Project } from '@/types';
 import { useState } from 'react';
-import { deleteProject } from '@/services/projects';
+import { deleteProject } from '@/actions/projects';
 
 export type Props = {
   data: Project;

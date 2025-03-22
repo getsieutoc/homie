@@ -1,6 +1,6 @@
 'use client';
 
-import { updateOrganization } from '@/services/organization';
+import { updateOrganization } from '@/actions/organization';
 import { TenantWithPayload } from '@/types';
 import { useEffect, useForm } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';

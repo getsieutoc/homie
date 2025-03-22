@@ -61,7 +61,7 @@ Homie is a compreh eensive security scanning platform designed to help organizat
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-org/homie.git
+   git clone git@github.com:getsieutoc/homie.git
    cd homie
    ```
 
@@ -89,7 +89,7 @@ pnpm install
 # Run database migrations on the first time OR when schema has changes
 pnpm prisma migrate dev
 
-# Seed the database (optional)
+# Seed the database (run only first time)
 pnpm prisma db seed
 
 # Start the development server
@@ -102,6 +102,7 @@ pnpm dev
 
 ```txt
 homie/
+├── actions/              # Server actions for business logics
 ├── app/                  # Next.js App Router pages and layouts
 │   ├── api/              # API routes
 │   ├── auth/             # Authentication pages
@@ -113,9 +114,9 @@ homie/
 │   └── ...
 ├── hooks/                # Custom React hooks
 ├── lib/                  # Utility functions and configuration
+├── mastra/               # Mastra services and agent definitions
 ├── prisma/               # Prisma schema and migrations
 ├── public/               # Static assets
-├── services/             # Business logic services
 └── types/                # TypeScript type definitions
 ```
 

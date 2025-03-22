@@ -80,89 +80,96 @@ export const ResultSection = ({
           {items.length > 0 && (
             <ScrollArea className="h-[300px] w-full rounded-md border py-2">
               <div>
-                {items.map((result, index) => (
-                  <div
-                    key={result.engineName}
-                    className="flex w-full flex-col items-start"
-                  >
-                    <div className="flex w-full items-center justify-between px-4 py-4">
-                      <p className="text-sm font-medium">{result.engineName}</p>
+                {items.map((result, index) => {
+                  if (isMalicious) {
+                    console.log('Rendering result:', result);
+                  }
+                  return (
+                    <div
+                      key={result.engineName}
+                      className="flex w-full flex-col items-start"
+                    >
+                      <div className="flex w-full items-center justify-between px-4 py-4">
+                        <p className="text-sm font-medium">{result.engineName}</p>
 
-                      <Badge
-                        variant="outline"
-                        className={
-                          isClean
-                            ? 'text-green-600'
-                            : isMalicious
-                            ? 'text-red-600'
-                            : 'text-gray-600'
-                        }
-                      >
-                        {result.result}
-                      </Badge>
+                        <Badge
+                          variant="outline"
+                          className={
+                            isClean
+                              ? 'text-green-600'
+                              : isMalicious
+                              ? 'text-red-600'
+                              : 'text-gray-600'
+                          }
+                        >
+                          {result.result}
+                        </Badge>
+                      </div>
+
+                      {isMalicious && (
+                        <div className="flex w-full items-start justify-start gap-4 px-4 text-xs">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">
+                              Dispute Count:
+                            </Label>
+                            <p className="text-sm font-medium">{result.disputeCount}</p>
+                          </div>
+
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">
+                              Disputed At:
+                            </Label>
+                            <p className="text-sm font-medium">
+                              {result.disputedAt ? (
+                                <span>
+                                  {format(result.disputedAt, 'dd.MM.yyyy HH:mm')}
+                                </span>
+                              ) : (
+                                <Minus className="h-4 w-4" />
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {isMalicious && (
+                        <div className="mt-2 flex items-center justify-start gap-2 px-4 pb-4">
+                          {result.vendor.email && (
+                            <Button
+                              onClick={() => handleGenerateEmail(result)}
+                              variant="warning"
+                              size="xs"
+                            >
+                              <SendHorizonal className="mr-2 h-3 w-3" />
+                              Send Dispute Email
+                            </Button>
+                          )}
+
+                          {result.vendor.url && (
+                            <Button
+                              onClick={() => window.open(result.vendor.url!, '_blank')}
+                              variant="info"
+                              size="xs"
+                            >
+                              <ExternalLink className="mr-2 h-3 w-3" />
+                              Submit Form
+                            </Button>
+                          )}
+
+                          {!result.vendor.email && !result.vendor.url && (
+                            <p className="text-xs text-muted-foreground">
+                              No dispute method available
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {items.length !== 1 && items.length !== index + 1 && (
+                        <Separator className="my-2" />
+                      )}
                     </div>
-
-                    {isMalicious && (
-                      <div className="flex w-full items-start justify-start gap-4 px-4 text-xs">
-                        <div className="space-y-1">
-                          <Label className="text-xs text-muted-foreground">
-                            Dispute Count:
-                          </Label>
-                          <p className="text-sm font-medium">{result.disputeCount}</p>
-                        </div>
-
-                        <div className="space-y-1">
-                          <Label className="text-xs text-muted-foreground">
-                            Disputed At:
-                          </Label>
-                          <p className="text-sm font-medium">
-                            {result.disputedAt ? (
-                              <span>{format(result.disputedAt, 'dd.MM.yyyy HH:mm')}</span>
-                            ) : (
-                              <Minus className="h-4 w-4" />
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {isMalicious && (
-                      <div className="mt-2 flex items-center justify-start gap-2 px-4 pb-4">
-                        {result.vendor.email && (
-                          <Button
-                            onClick={() => handleGenerateEmail(result)}
-                            variant="warning"
-                            size="xs"
-                          >
-                            <SendHorizonal className="mr-2 h-3 w-3" />
-                            Send Dispute Email
-                          </Button>
-                        )}
-
-                        {result.vendor.url && (
-                          <Button
-                            onClick={() => window.open(result.vendor.url!, '_blank')}
-                            variant="info"
-                            size="xs"
-                          >
-                            <ExternalLink className="mr-2 h-3 w-3" />
-                            Submit Form
-                          </Button>
-                        )}
-
-                        {!result.vendor.email && !result.vendor.url && (
-                          <p className="text-xs text-muted-foreground">
-                            No dispute method available
-                          </p>
-                        )}
-                      </div>
-                    )}
-
-                    {items.length !== 1 && items.length !== index + 1 && (
-                      <Separator className="my-2" />
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </ScrollArea>
           )}

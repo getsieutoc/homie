@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
-import { deleteProject } from '@/services/projects';
+import { deleteProject } from '@/actions/projects';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { type Project } from '@/types';

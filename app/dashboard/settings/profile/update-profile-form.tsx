@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth, useEffect, useForm } from '@/hooks';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { updateProfile } from '@/services/auth';
+import { updateProfile } from '@/actions/auth';
 
 const formSchema = z.object({
   name: z.string().min(2, {

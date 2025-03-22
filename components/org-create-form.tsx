@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { createOrganization } from '@/services/organization';
+import { createOrganization } from '@/actions/organization';
 import { useEffect, useState, useForm } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';

@@ -1,6 +1,6 @@
 import { userIncludes, resultIncludes, tenantIncludes } from '@/lib/rich-includes';
-import { getResultStats } from '@/services/results';
-import { getProjects } from '@/services/projects';
+import { getResultStats } from '@/actions/results';
+import { getProjects } from '@/actions/projects';
 import { Icons } from '@/components/icons';
 import { Prisma } from '@prisma/client';
 import { type ReactNode } from 'react';

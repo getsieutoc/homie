@@ -1,4 +1,4 @@
-import { getMyOrganizations, getOrganizationById } from '@/services/organization';
+import { getMyOrganizations, getOrganizationById } from '@/actions/organization';
 
 import { SearchInput } from '../search-input';
 import { SidebarTrigger } from '../ui/sidebar';

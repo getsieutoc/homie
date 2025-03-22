@@ -19,7 +19,7 @@ import { useTransition } from 'react';
 import { toast } from 'sonner';
 import { useQueryState } from 'nuqs';
 import * as z from 'zod';
-import { signup } from '@/services/auth';
+import { signup } from '@/actions/auth';
 
 const formSchema = z
   .object({

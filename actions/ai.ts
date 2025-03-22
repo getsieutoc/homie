@@ -1,11 +1,11 @@
 'use server';
 
+import { emailSchema, resultSchema } from '@/lib/zod-schemas';
 import { SYSTEM_PROMPT } from '@/lib/constants';
 import { createStreamableValue } from 'ai/rsc';
 import { getOpenAIModel } from '@/lib/openai';
 import { streamObject } from 'ai';
 import { z } from 'zod';
-import { emailSchema } from '@/lib/zod-schemas';
 
 export type ResultInput = {
   result: string;
@@ -13,13 +13,6 @@ export type ResultInput = {
   projectDomain: string;
   resultCategory: string;
 };
-
-const resultSchema = z.object({
-  result: z.string(),
-  engineName: z.string(),
-  projectDomain: z.string(),
-  resultCategory: z.string(),
-});
 
 export const generateEmail = async (input: ResultInput) => {
   const stream = createStreamableValue();

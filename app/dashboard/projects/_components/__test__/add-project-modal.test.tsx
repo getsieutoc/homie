@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AddProjectModal } from '../add-project-modal';
-import { upsertProject } from '@/services/projects';
+import { upsertProject } from '@/actions/projects';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 vi.mock('@/services/projects', () => ({

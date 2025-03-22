@@ -1,7 +1,7 @@
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
-import { getProjectById } from '@/services/projects';
-import { getResultStats, getResults } from '@/services/results';
+import { getProjectById } from '@/actions/projects';
+import { getResultStats, getResults } from '@/actions/results';
 import { Suspense } from 'react';
 import { type Metadata } from 'next';
 

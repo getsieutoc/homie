@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Slash, ChevronDown, Plus } from 'lucide-react';
-import { switchOrganization } from '@/services/organization';
+import { switchOrganization } from '@/actions/organization';
 import { type Organization } from '@/types';
 import { useBreadcrumbs } from '@/hooks';
 import { Fragment, useState } from 'react';

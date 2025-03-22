@@ -1,6 +1,6 @@
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { getVendors } from '@/services/vendors';
+import { getVendors } from '@/actions/vendors';
 import { VendorListing } from './_components/vendor-listing';
 import PageContainer from '@/components/layout/page-container';
 

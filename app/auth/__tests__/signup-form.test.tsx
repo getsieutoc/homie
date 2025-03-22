@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SignupForm } from '../signup-form';
 import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
-import { signup } from '@/services/auth';
+import { signup } from '@/actions/auth';
 
 // Mock the required modules
 vi.mock('next-auth/react', () => ({

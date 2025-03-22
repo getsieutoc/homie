@@ -3,13 +3,21 @@ import { prisma } from '@/lib/prisma';
 import path from 'path';
 import fs from 'fs';
 
-export const readVendorList = async () => {
+type Vendor = {
+  Engine: string;
+  Email: string;
+  URL: string;
+};
+
+const readVendorList = async () => {
   const csvFilePath = path.join(__dirname, 'vendor-list.csv');
   const fileContent = fs.readFileSync(csvFilePath, 'utf-8');
-  const records = parse(fileContent, {
+
+  const records: Vendor[] = parse(fileContent, {
     columns: true,
     skip_empty_lines: true,
   });
+
   return records;
 };
 
@@ -26,7 +34,7 @@ async function main() {
 
     // Create vendors
     const createdVendors = await Promise.all(
-      vendors.map((vendor: { Engine: string; Email: string; URL: string }) =>
+      vendors.map((vendor) =>
         prisma.vendor.create({
           data: {
             engineName: vendor.Engine,
@@ -47,8 +55,8 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (e) => {
-    console.error('⚠️  Seeding failed', e);
+  .catch(async (err) => {
+    console.error('⚠️  Seeding failed', err);
     await prisma.$disconnect();
     process.exit(1);
   });

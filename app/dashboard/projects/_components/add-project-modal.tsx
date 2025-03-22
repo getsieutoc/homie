@@ -17,9 +17,9 @@ import {
 } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { upsertProject } from '@/services/projects';
-import { checkDomain } from '@/services/virustotal';
-import { upsertResults } from '@/services/results';
+import { upsertProject } from '@/actions/projects';
+import { checkDomain } from '@/actions/virustotal';
+import { upsertResults } from '@/actions/results';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus } from 'lucide-react';

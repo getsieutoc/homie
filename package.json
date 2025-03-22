@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "clean": "rimraf node_modules dist .next && pnpm install",
-    "dev": "docker compose -f docker/compose.dev.yaml up -d && pnpm run watch && docker compose -f docker/compose.dev.yaml stop",
+    "clean": "rimraf node_modules dist .next .mastra && pnpm install",
+    "compose": "docker compose -f docker/compose.dev.yaml",
+    "dev": "pnpm run compose up -d && pnpm run watch && pnpm run compose stop",
     "watch": "trap 'exit 0' SIGINT; concurrently --raw --kill-others pnpm:dev:*",
     "dev:trigger": "pnpm dlx trigger.dev@latest dev",
     "dev:prisma": "prisma generate --watch",
@@ -17,9 +18,7 @@
     "format": "prettier . --write",
     "prisma": "prisma",
     "prepare": "husky",
-    "test": "vitest",
-    "test:watch": "vitest watch",
-    "test:coverage": "vitest run --coverage"
+    "test": "vitest"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -37,6 +36,7 @@
     "@dnd-kit/sortable": "8.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@hookform/resolvers": "3.3.2",
+    "@mastra/core": "0.6.3",
     "@prisma/client": "6.5.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-alert-dialog": "1.0.5",
@@ -123,6 +123,7 @@
     "husky": "9.0.11",
     "jsdom": "25.0.1",
     "lint-staged": "15.2.7",
+    "mastra": "0.4.2",
     "prettier": "3.0.3",
     "prettier-plugin-prisma": "5.0.0",
     "prettier-plugin-tailwindcss": "0.5.14",
@@ -134,5 +135,17 @@
     "vitest": "2.1.8",
     "vitest-mock-extended": "2.0.2"
   },
-  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
+  "packageManager": "pnpm@10.6.5+sha512.cdf928fca20832cd59ec53826492b7dc25dc524d4370b6b4adbf65803d32efaa6c1c88147c0ae4e8d579a6c9eec715757b50d4fa35eea179d868eada4ed043af",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@swc/core",
+      "bcrypt",
+      "esbuild",
+      "prisma",
+      "protobufjs",
+      "sharp"
+    ]
+  }
 }

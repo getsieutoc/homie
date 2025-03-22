@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/auth';
 
 import { UpdateOrganizationForm } from './update-organization-form';
-import { getOrganizationById } from '@/services/organization';
+import { getOrganizationById } from '@/actions/organization';
 import { Separator } from '@/components/ui/separator';
 
 export const metadata = {
