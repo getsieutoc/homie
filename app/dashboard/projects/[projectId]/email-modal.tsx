@@ -11,7 +11,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { useObject, useRouter, useForm, useEffect } from '@/hooks';
 import { type ResultWithPayload, type Project } from '@/types';
-import { Loader2, Send, Sparkles } from 'lucide-react';
+import { Loader2, SendHorizonal, Sparkles } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { updateResultById } from '@/actions/results';
 import { sendEmail } from '@/actions/email';
@@ -224,7 +224,7 @@ export const EmailModal = ({ isOpen, onClose, result, project }: Props) => {
                   </Button>
 
                   <Button disabled={!isDirty} type="submit">
-                    <Send className="mr-2 h-4 w-4" /> Send Now
+                    <SendHorizonal className="mr-2 h-4 w-4" /> Send Now
                   </Button>
                 </div>
               </div>

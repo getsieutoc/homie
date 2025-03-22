@@ -5,7 +5,6 @@ import { SYSTEM_PROMPT } from '@/lib/constants';
 import { createStreamableValue } from 'ai/rsc';
 import { getOpenAIModel } from '@/lib/openai';
 import { streamObject } from 'ai';
-import { z } from 'zod';
 
 export type ResultInput = {
   result: string;

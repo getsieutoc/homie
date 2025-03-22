@@ -9,8 +9,6 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons'],
-    // Required for some newer Next.js features
-    serverExternalPackages: ['@mastra/*'],
   },
   images: {
     remotePatterns: [

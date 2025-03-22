@@ -81,9 +81,9 @@ export const ResultSection = ({
             <ScrollArea className="h-[300px] w-full rounded-md border py-2">
               <div>
                 {items.map((result, index) => {
-                  if (isMalicious) {
-                    console.log('Rendering result:', result);
-                  }
+                  // if (isMalicious) {
+                  //   console.log('Rendering result:', result);
+                  // }
                   return (
                     <div
                       key={result.engineName}
@@ -137,7 +137,7 @@ export const ResultSection = ({
                           {result.vendor.email && (
                             <Button
                               onClick={() => handleGenerateEmail(result)}
-                              variant="warning"
+                              // variant="warning"
                               size="xs"
                             >
                               <SendHorizonal className="mr-2 h-3 w-3" />
