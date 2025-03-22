@@ -1,0 +1,90 @@
+FROM node:22.14-alpine AS base
+
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN corepack enable pnpm
+
+FROM base AS deps
+
+RUN apk add --no-cache libc6-compat
+
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml* ./
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i --frozen-lockfile
+
+FROM base AS builder
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Environment variables must be present at build time
+ENV NODE_ENV=production
+ARG AUTH_SECRET
+ENV AUTH_SECRET=${AUTH_SECRET}
+ARG AUTH_URL
+ENV AUTH_URL=${AUTH_URL}
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+ARG VIRUSTOTAL_API_KEY
+ENV VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+ARG POSTMARK_API_KEY
+ENV POSTMARK_API_KEY=${POSTMARK_API_KEY}
+ARG FROM_EMAIL
+ENV FROM_EMAIL=${FROM_EMAIL}
+ARG TRIGGER_SECRET_KEY
+ENV TRIGGER_SECRET_KEY=${TRIGGER_SECRET_KEY}
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+ARG OPENAI_API_BASE_URL
+ENV OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL}
+ARG OPENAI_MODEL
+ENV OPENAI_MODEL=${OPENAI_MODEL}
+RUN pnpm build
+
+FROM base AS runner
+
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Environment variables must be redefined at run time
+ENV NODE_ENV=production
+ARG AUTH_SECRET
+ENV AUTH_SECRET=${AUTH_SECRET}
+ARG AUTH_URL
+ENV AUTH_URL=${AUTH_URL}
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+ARG VIRUSTOTAL_API_KEY
+ENV VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+ARG POSTMARK_API_KEY
+ENV POSTMARK_API_KEY=${POSTMARK_API_KEY}
+ARG FROM_EMAIL
+ENV FROM_EMAIL=${FROM_EMAIL}
+ARG TRIGGER_SECRET_KEY
+ENV TRIGGER_SECRET_KEY=${TRIGGER_SECRET_KEY}
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+ARG OPENAI_API_BASE_URL
+ENV OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL}
+ARG OPENAI_MODEL
+ENV OPENAI_MODEL=${OPENAI_MODEL}
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]
