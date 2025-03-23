@@ -62,7 +62,6 @@ jobs:
             "composeType": "docker-compose",
             "serverId": null
           }')
-
           echo "COMPOSE_ID=$(echo $CREATED_RESPONSE | jq -r '.composeId')" >> $GITHUB_ENV
 
       - name: Update Compose
@@ -80,7 +79,6 @@ jobs:
             "owner":"${{ env.ORG_NAME }}",
             "sourceType":"github",
             "composeStatus":"idle"
-            
           }'
 
       - name: Create New Domain
