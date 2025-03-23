@@ -8,7 +8,7 @@ on:
 
 env:
   ORG_NAME: getsieutoc
-  REPO_NAME: homie
+  REPO_NAME: ${{ github.event.repository.name }}
   COMPOSE_PATH: './docker-compose/production.yaml'
   PR_NUMBER: ${{ github.event.number }}
   DOMAIN: pr-${{ github.event.number }}.sieutoc.app
@@ -37,12 +37,10 @@ jobs:
         id: convert-env
         run: |
           ENV_STRING_RAW=$(cat << 'EOF'
-          DOMAIN=${{ env.DOMAIN }}
           POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }}
           POSTGRES_PORT=${{ env.POSTGRES_PORT }}
-          BETTER_AUTH_SECRET=${{ env.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL=${{ 'https://${DOMAIN}' }}
-          NEXT_PUBLIC_BASE_URL=${{ 'https://${DOMAIN}' }}
+          AUTH_SECRET=${{ env.AUTH_SECRET }}
+          AUTH_URL=${{ 'https://${REPO_NAME}-${DOMAIN}' }}
           POSTMARK_API_KEY=${{ '${{project.POSTMARK_API_KEY}}' }}
           FROM_EMAIL=${{ '${{project.FROM_EMAIL}}' }}
           EOF
