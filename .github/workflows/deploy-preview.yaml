@@ -126,3 +126,17 @@ jobs:
 
       - name: Seed Database
         run: pnpm prisma db seed
+
+      - name: Comment Preview URL
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `
+              🚀 Preview environment deployed successfully!
+              👉 Access your preview at: https://${{ env.APP_NAME }}.sieutoc.app
+              `
+            })
