@@ -107,36 +107,22 @@ jobs:
             "composeId":"${{ env.COMPOSE_ID }}"
            }'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Create workflow data file
+        run: |
+          cat > deploy-preview-data.json << EOF
+          {
+            "compose_id": "${{ env.COMPOSE_ID }}",
+            "app_name": "${{ env.APP_NAME }}",
+            "postgres_password": "${{ env.POSTGRES_PASSWORD }}",
+            "postgres_port": "${{ env.POSTGRES_PORT }}"
+          }
+          EOF
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Upload workflow data
+        uses: actions/upload-artifact@v4
         with:
-          node-version: 22.14
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm i --frozen-lockfile
-
-      - name: Deploy Migrations
-        run: pnpm prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://postgres:${{ env.POSTGRES_PASSWORD }}@server.sieutoc.app:${{ env.POSTGRES_PORT }}/postgres?schema=public
-
-      - name: Seed Database
-        run: pnpm prisma db seed
-
-      - name: Comment Preview URL
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `
-              🚀 Preview environment deployed successfully!
-              👉 Access your preview at: https://${{ env.APP_NAME }}.sieutoc.app
-              `
-            })
+          name: deploy-preview-data
+          path: deploy-preview-data.json
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true

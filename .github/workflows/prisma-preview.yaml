@@ -1,0 +1,161 @@
+# TODO: Still not checking to make sure this is working!!!
+name: Prisma Preview Migration
+
+on:
+  workflow_run:
+    workflows: ['Deploy Preview']
+    types:
+      - completed
+
+jobs:
+  prisma-migration:
+    name: Prisma Migration
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download workflow artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: deploy-preview.yaml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: deploy-preview-data
+          path: .
+
+      - name: Load environment variables
+        id: load-env
+        run: |
+          if [ -f "./deploy-preview-data.json" ]; then
+            echo "Reading workflow data file"
+            COMPOSE_ID=$(jq -r '.compose_id' deploy-preview-data.json)
+            APP_NAME=$(jq -r '.app_name' deploy-preview-data.json)
+            POSTGRES_PASSWORD=$(jq -r '.postgres_password' deploy-preview-data.json)
+            POSTGRES_PORT=$(jq -r '.postgres_port' deploy-preview-data.json)
+            
+            echo "COMPOSE_ID=${COMPOSE_ID}" >> $GITHUB_ENV
+            echo "APP_NAME=${APP_NAME}" >> $GITHUB_ENV
+            echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> $GITHUB_ENV
+            echo "POSTGRES_PORT=${POSTGRES_PORT}" >> $GITHUB_ENV
+          else
+            echo "::error::deploy-preview-data.json not found"
+            exit 1
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Wait for Deployment to Complete
+        id: deployment-status
+        run: |
+          MAX_ATTEMPTS=60
+          ATTEMPT=1
+          POLL_INTERVAL=10
+
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "Checking deployment status (Attempt $ATTEMPT/$MAX_ATTEMPTS)..."
+            
+            RESPONSE=$(curl -s -X GET '${{ vars.DOKPLOY_URL }}/api/deployment.allByCompose?composeId=${{ env.COMPOSE_ID }}' \
+              -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
+              -H "Content-Type: application/json")
+            
+            # Check if response is empty or not valid JSON
+            if [ -z "$RESPONSE" ] || ! echo "$RESPONSE" | jq -e . > /dev/null 2>&1; then
+              echo "Invalid or empty response received"
+              sleep $POLL_INTERVAL
+              ATTEMPT=$((ATTEMPT+1))
+              continue
+            fi
+            
+            # Get the status of the first deployment (assuming sorted by most recent)
+            STATUS=$(echo "$RESPONSE" | jq -r '.[0].status // "unknown"')
+            echo "Current deployment status: $STATUS"
+            
+            # Check for successful states
+            if [ "$STATUS" = "done" ]; then
+              echo "Deployment completed successfully!"
+              echo "deployment_id=$(echo "$RESPONSE" | jq -r '.[0].deploymentId')" >> $GITHUB_OUTPUT
+              break
+            fi
+            
+            # Check for failure states
+            if [ "$STATUS" = "failed" ] || [ "$STATUS" = "error" ]; then
+              ERROR_MSG=$(echo "$RESPONSE" | jq -r '.[0].errorMessage // "Unknown error"')
+              echo "Deployment failed with error: $ERROR_MSG"
+              exit 1
+            fi
+            
+            # Handle in-progress states with more informative messaging
+            if [ "$STATUS" = "pending" ] || [ "$STATUS" = "in_progress" ] || [ "$STATUS" = "deploying" ]; then
+              echo "Deployment is still in progress ($STATUS)..."
+            fi
+            
+            echo "Waiting $POLL_INTERVAL seconds before next check..."
+            sleep $POLL_INTERVAL
+            ATTEMPT=$((ATTEMPT+1))
+          done
+
+          # Check if we've exceeded max attempts
+          if [ $ATTEMPT -gt $MAX_ATTEMPTS ]; then
+            echo "Deployment check timed out after $MAX_ATTEMPTS attempts"
+            exit 1
+          fi
+
+      - name: Deploy Migrations
+        run: pnpm prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:${{ env.POSTGRES_PASSWORD }}@server.sieutoc.app:${{ env.POSTGRES_PORT }}/postgres?schema=public
+
+      - name: Seed Database
+        run: pnpm prisma db seed
+        env:
+          DATABASE_URL: postgresql://postgres:${{ env.POSTGRES_PASSWORD }}@server.sieutoc.app:${{ env.POSTGRES_PORT }}/postgres?schema=public
+
+      - name: Comment Preview URL
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Find the PR number from the original workflow
+            const { owner, repo } = context.repo;
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: 'deploy-preview.yaml',
+              status: 'completed',
+              per_page: 1
+            });
+
+            // Get the PR from the workflow run
+            const run = runs.data.workflow_runs[0];
+            const prNumber = run.pull_requests[0]?.number;
+
+            if (!prNumber) {
+              console.log('Could not find a PR number associated with this workflow run');
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner,
+              repo,
+              body: `
+              🚀 Preview environment deployed successfully!
+              👉 Access your preview at: https://${{ env.APP_NAME }}.sieutoc.app
+              
+              ✅ Database migrations and seed data have been applied!
+              `
+            });
