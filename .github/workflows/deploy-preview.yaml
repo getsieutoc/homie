@@ -7,12 +7,11 @@ on:
       - reopened
 
 env:
-  ORG_NAME: getsieutoc
+  ORG_NAME: ${{ github.repository_owner }}
   REPO_NAME: ${{ github.event.repository.name }}
-  COMPOSE_PATH: './docker-compose/production.yaml'
-  PR_NUMBER: ${{ github.event.number }}
-  DOMAIN: pr-${{ github.event.number }}.sieutoc.app
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  COMPOSE_PATH: './docker/compose.prod.yaml'
+  APP_NAME: pr-${{ github.event.number }}-${{ github.event.repository.name }}
+  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
   deploy-preview:
@@ -31,7 +30,7 @@ jobs:
         run: |
           echo "POSTGRES_PASSWORD=$(LC_CTYPE=C tr -d -c '[:alnum:]' </dev/urandom | head -c 15)" >> $GITHUB_ENV
           echo "POSTGRES_PORT=$(shuf -i 55000-55999 -n 1)" >> $GITHUB_ENV
-          echo "BETTER_AUTH_SECRET=$(openssl rand -base64 32)" >> $GITHUB_ENV
+          echo "AUTH_SECRET=$(openssl rand -base64 32)" >> $GITHUB_ENV
 
       - name: Convert Env String
         id: convert-env
@@ -40,9 +39,12 @@ jobs:
           POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }}
           POSTGRES_PORT=${{ env.POSTGRES_PORT }}
           AUTH_SECRET=${{ env.AUTH_SECRET }}
-          AUTH_URL=${{ 'https://${REPO_NAME}-${DOMAIN}' }}
+          AUTH_URL=https://${{ env.APP_NAME }}.sieutoc.app
           POSTMARK_API_KEY=${{ '${{project.POSTMARK_API_KEY}}' }}
           FROM_EMAIL=${{ '${{project.FROM_EMAIL}}' }}
+          OPENAI_API_KEY=${{ '${{project.OPENAI_API_KEY}}' }}
+          OPENAI_API_BASE_URL=${{ '${{project.OPENAI_API_BASE_URL}}' }}
+          OPENAI_MODEL=${{ '${{project.OPENAI_MODEL}}' }}
           EOF
           )
           ENV_STRING_ESCAPED="${ENV_STRING_RAW//$'\n'/\\n}"
@@ -54,9 +56,9 @@ jobs:
           -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
           -H "Content-Type: application/json" \
           -d '{
-            "name": "pr-${{ env.PR_NUMBER }}",
+            "name": "${{ env.APP_NAME }}",
             "projectId": "${{ vars.PROJECT_ID }}",
-            "appName":"${{ env.REPO_NAME }}-pr-${{ env.PR_NUMBER }}",
+            "appName":"${{ env.APP_NAME }}",
             "composeType": "docker-compose",
             "serverId": null
           }')
@@ -72,9 +74,9 @@ jobs:
             "env": "${{ steps.convert-env.outputs.env_string }}",
             "composePath":"${{ env.COMPOSE_PATH }}",
             "composeId":"${{ env.COMPOSE_ID }}",
-            "name": "pr-${{ env.PR_NUMBER }}",
+            "name": "pr-${{ env.APP_NAME }}",
             "projectId": "${{ vars.PROJECT_ID }}",
-            "appName":"${{ env.REPO_NAME }}-pr-${{ env.PR_NUMBER }}",
+            "appName":"${{ env.APP_NAME }}",
             "githubId":"${{ vars.NODE_GITHUB_ID }}",
             "branch":"${{ env.BRANCH_NAME }}",
             "repository":"${{ env.REPO_NAME }}",
@@ -91,7 +93,7 @@ jobs:
           -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
           -H "Content-Type: application/json" \
           -d '{
-            "host": "${{ env.DOMAIN }}",
+            "host": "${{ env.APP_NAME }}.sieutoc.app",
             "path": "/",
             "port": 3000,
             "https": true,
