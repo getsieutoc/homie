@@ -1,4 +1,4 @@
-name: Prisma Production
+name: Prisma Production Migration
 
 on:
   push:

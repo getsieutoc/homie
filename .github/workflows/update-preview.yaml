@@ -30,7 +30,7 @@ jobs:
 
       - name: Redeploy Compose
         run: |
-          curl -X POST '${{ vars.DOKPLOY_URL }}/api/compose.deploy' \
+          curl -X POST '${{ vars.DOKPLOY_URL }}/api/compose.redeploy' \
           -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
           -H "Content-Type: application/json" \
           -d '{
