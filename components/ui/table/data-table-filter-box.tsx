@@ -9,13 +9,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator
+  CommandSeparator,
 } from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
@@ -45,7 +41,7 @@ export function DataTableFilterBox({
   title,
   options,
   setFilterValue,
-  filterValue
+  filterValue,
 }: FilterBoxProps) {
   const selectedValuesSet = React.useMemo(() => {
     if (!filterValue) return new Set<string>();
@@ -74,29 +70,22 @@ export function DataTableFilterBox({
           {selectedValuesSet.size > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge
-                variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
-              >
+              <Badge variant="outline" className="rounded-sm px-1 font-normal lg:hidden">
                 {selectedValuesSet.size}
               </Badge>
               <div className="hidden space-x-1 lg:flex">
                 {selectedValuesSet.size > 2 ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
+                  <Badge variant="outline" className="rounded-sm px-1 font-normal">
                     {selectedValuesSet.size} selected
                   </Badge>
                 ) : (
                   Array.from(selectedValuesSet).map((value) => (
                     <Badge
-                      variant="secondary"
+                      variant="outline"
                       key={value}
                       className="rounded-sm px-1 font-normal"
                     >
-                      {options.find((option) => option.value === value)
-                        ?.label || value}
+                      {options.find((option) => option.value === value)?.label || value}
                     </Badge>
                   ))
                 )}
