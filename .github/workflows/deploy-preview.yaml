@@ -9,9 +9,9 @@ on:
 env:
   ORG_NAME: ${{ github.repository_owner }}
   REPO_NAME: ${{ github.event.repository.name }}
+  BRANCH_NAME: ${{ github.head_ref }}
   COMPOSE_PATH: './docker/compose.prod.yaml'
   APP_NAME: pr-${{ github.event.number }}-${{ github.event.repository.name }}
-  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
   deploy-preview:
@@ -71,20 +71,16 @@ jobs:
           -H "x-api-key: ${{ secrets.DOKPLOY_TOKEN }}" \
           -H "Content-Type: application/json" \
           -d '{
+            "composeId":"${{ env.COMPOSE_ID }}",
             "env": "${{ steps.convert-env.outputs.env_string }}",
             "composePath":"${{ env.COMPOSE_PATH }}",
-            "composeId":"${{ env.COMPOSE_ID }}",
-            "name": "${{ env.APP_NAME }}",
-            "projectId": "${{ vars.PROJECT_ID }}",
-            "appName":"${{ env.APP_NAME }}",
             "githubId":"${{ vars.NODE_GITHUB_ID }}",
             "branch":"${{ env.BRANCH_NAME }}",
             "repository":"${{ env.REPO_NAME }}",
             "owner":"${{ env.ORG_NAME }}",
             "sourceType":"github",
-            "composeType": "docker-compose",
-            "composeStatus":"idle",
-            "serverId": null
+            "composeStatus":"idle"
+            
           }'
 
       - name: Create New Domain
