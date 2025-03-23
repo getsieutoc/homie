@@ -74,7 +74,7 @@ jobs:
             "env": "${{ steps.convert-env.outputs.env_string }}",
             "composePath":"${{ env.COMPOSE_PATH }}",
             "composeId":"${{ env.COMPOSE_ID }}",
-            "name": "pr-${{ env.APP_NAME }}",
+            "name": "${{ env.APP_NAME }}",
             "projectId": "${{ vars.PROJECT_ID }}",
             "appName":"${{ env.APP_NAME }}",
             "githubId":"${{ vars.NODE_GITHUB_ID }}",
