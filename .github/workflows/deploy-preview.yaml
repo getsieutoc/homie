@@ -108,3 +108,23 @@ jobs:
           -d '{
             "composeId":"${{ env.COMPOSE_ID }}"
            }'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Deploy Migrations
+        run: pnpm prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:${{ env.POSTGRES_PASSWORD }}@server.sieutoc.app:${{ env.POSTGRES_PORT }}/postgres?schema=public
+
+      - name: Seed Database
+        run: pnpm prisma db seed
