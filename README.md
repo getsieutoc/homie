@@ -1,7 +1,6 @@
 # Homie
 
-A multi-tenant domain scanner, keep your domains tight.
-Lockin’ down threats, got your back like a homie in a fight!
+Keep your domains tight, got your back like a homie in a fight!
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
