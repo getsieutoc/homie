@@ -9,6 +9,8 @@ Lockin’ down threats, got your back like a homie in a fight!
 
 Homie is a compreh eensive security scanning platform designed to help organizations monitor and manage domain security. It provides a centralized dashboard for tracking security scans across multiple domains and projects, with a focus on threat detection and management through VirusTotal integration.
 
+![Screenrecord](https://i.imgur.com/kzUfna7.gif|width=100)
+
 ### Key Features
 
 - 🔒 **Domain Security Scanning**: Automated checks using VirusTotal API
