@@ -26,7 +26,6 @@ type ResultQuery = {
   skip?: number;
   take?: number;
 };
-
 export const getResults = async ({ where, orderBy = {}, skip, take }: ResultQuery) => {
   return await prisma.result.findMany({
     include: resultIncludes,

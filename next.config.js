@@ -9,6 +9,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons'],
+    typedRoutes: true,
   },
   images: {
     remotePatterns: [
