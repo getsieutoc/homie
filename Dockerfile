@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 FROM node:22.14-alpine AS base
 
 ENV NEXT_TELEMETRY_DISABLED 1
